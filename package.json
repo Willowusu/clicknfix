@@ -17,6 +17,7 @@
     "errsole-mongodb": "^2.2.0",
     "errsole-sqlite": "^2.2.0",
     "express": "~4.16.1",
+    "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
     "http-errors": "~1.6.3",
     "mongoose": "^8.9.2",

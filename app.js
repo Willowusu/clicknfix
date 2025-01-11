@@ -10,10 +10,12 @@ const mongoose = require('mongoose');
 const os = require('os');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
+const expressLayouts = require('express-ejs-layouts')
+
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var providersRouter = require('./routes/providers');
 var apiVersionOneRouter = require('./routes/apiVersionOne');
 
 // Insert the Errsole code snippet at the beginning of your app's main file
@@ -40,6 +42,7 @@ mongoose.connect(process.env.MONGO_URL);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(expressLayouts);
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -60,7 +63,7 @@ app.use(session({
 }));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/provider', providersRouter);
 app.use('/api/v1', apiVersionOneRouter);
 
 // catch 404 and forward to error handler
