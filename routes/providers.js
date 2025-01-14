@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
+const { requireAuth } = require('../api/middlewares/authenticate.middleware');
+ 
 
 /* GET provider dashboard. */
-router.get('/dashboard', function(req, res) {
-  res.render('provider/dashboard', {title: "Dashboard", layout: './layouts/provider'});
+router.get('/dashboard', requireAuth, function(req, res) {
+  let userDetails = req.session.user
+  res.render('provider/dashboard', {title: "Dashboard", userDetails: userDetails, layout: './layouts/provider'});
 });
 
 /* GET provider dashboard. */

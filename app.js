@@ -16,6 +16,7 @@ require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var providersRouter = require('./routes/providers');
+var servicemenRouter = require('./routes/servicemen');
 var apiVersionOneRouter = require('./routes/apiVersionOne');
 
 // Insert the Errsole code snippet at the beginning of your app's main file
@@ -64,6 +65,7 @@ app.use(session({
 
 app.use('/', indexRouter);
 app.use('/provider', providersRouter);
+app.use('/serviceman', servicemenRouter);
 app.use('/api/v1', apiVersionOneRouter);
 
 // catch 404 and forward to error handler
