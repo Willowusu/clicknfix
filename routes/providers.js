@@ -1,12 +1,18 @@
 var express = require('express');
 var router = express.Router();
-const { requireAuth } = require('../api/middlewares/authenticate.middleware');
+let axios = require('axios');
+let errsole = require('errsole');
+const { authorizeAccess } = require('../api/middlewares/authenticate.middleware');
  
 
+
+/****************GET***********************/
+
+
 /* GET provider dashboard. */
-router.get('/dashboard', requireAuth, function(req, res) {
-  let userDetails = req.session.user
-  res.render('provider/dashboard', {title: "Dashboard", userDetails: userDetails, layout: './layouts/provider'});
+router.get('/dashboard', authorizeAccess, function(req, res) {
+
+  res.render('provider/dashboard', {title: "Dashboard", providerInfo: req.userInfo, layout: './layouts/provider'});
 });
 
 /* GET provider dashboard. */
@@ -93,5 +99,35 @@ router.get('/plans/all', function (req, res) {
 router.get('/plans/subscriptions', function (req, res) {
   res.render('provider/subscriptionPlans', { title: "Dashboard", layout: './layouts/provider' });
 });
+
+
+
+
+/****************POST***********************/
+
+router.post('/dashboard/top-information', async function(req, res){
+  console.log(req)
+let response;
+  let options = {
+    method: "POST",
+    url: `http://localhost:3000/api/v1/provider/dashboard/top-information`,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: {}
+  };
+
+  try{
+     response = await axios.request(options);
+  }catch(error){
+    errsole.error('There was an error getting the top dashboard information', error)
+    return res.send(null);
+  }
+
+  return res.send(response.data)
+})
+
+
+
 
 module.exports = router;

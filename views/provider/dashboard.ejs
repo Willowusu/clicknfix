@@ -7,7 +7,7 @@
                     <i class="text-dark ki-outline ki-profile-user w-50px fs-3x ms-n1 me-1"></i>
                     <div class="fs-1 text-gray-600 text-hover-primary fw-bold">Total Revenue</div>
                 </div>
-                <div class="fs-2x text-gray-800 text-hover-primary fw-bold">$324.67</div>
+                <div class="fs-2x text-gray-800 text-hover-primary fw-bold" id="totalRevenue">-</div>
             </div>
         </div>
         <div class="row">
@@ -18,7 +18,7 @@
                             <i class="text-dark ki-outline ki-profile-user w-50px fs-3x ms-n1 me-1"></i>
                             <div class="text-gray-600 text-hover-primary fw-bold">Servicemen</div>
                         </div>
-                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold">5</div>
+                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold" id="totalServicemen">-</div>
                     </div>
                 </div>
             </div>
@@ -29,7 +29,7 @@
                             <i class="text-dark ki-outline ki-profile-user w-50px fs-3x ms-n1 me-1"></i>
                             <div class="text-gray-600 text-hover-primary fw-bold">Services</div>
                         </div>
-                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold">25</div>
+                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold" id="totalServices">-</div>
                     </div>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                             <i class="text-dark ki-outline ki-profile-user w-50px fs-3x ms-n1 me-1"></i>
                             <div class="text-gray-600 text-hover-primary fw-bold">Bookings</div>
                         </div>
-                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold">14</div>
+                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold" id="totalBookings">-</div>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                             <i class="text-dark ki-outline ki-profile-user w-50px fs-3x ms-n1 me-1"></i>
                             <div class="text-gray-600 text-hover-primary fw-bold">Balance</div>
                         </div>
-                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold">$1324.67</div>
+                        <div class="fs-2x text-gray-800 text-hover-primary fw-bold" id="totalBalance">-</div>
                     </div>
                 </div>
             </div>
@@ -72,9 +72,9 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1 "></i>
-                                <div class="text-gray-600 text-hover-primary fw-bold">Pending</div>
+                                <div class="text-gray-600 text-hover-primary fw-bold">Added</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">1</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalAddedBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1"></i>
                                 <div class="text-gray-600 text-hover-primary fw-bold">On going</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">0</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalOngoingBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -96,7 +96,7 @@
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1"></i>
                                 <div class="text-gray-600 text-hover-primary fw-bold">On the way</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">1</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalOnthewayBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1"></i>
                                 <div class="text-gray-600 text-hover-primary fw-bold">Completed</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">5</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalCompletedBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1"></i>
                                 <div class="text-gray-600 text-hover-primary fw-bold">Cancelled</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">1</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalCancelledBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
                                 <i class="text-dark ki-outline ki-profile-user w-50px fs-2x ms-n1 me-1"></i>
                                 <div class="text-gray-600 text-hover-primary fw-bold">On Hold</div>
                             </div>
-                            <div class="text-gray-800 text-hover-primary fw-bold">0</div>
+                            <div class="text-gray-800 text-hover-primary fw-bold" id="totalOnholdBookings">-</div>
                         </div>
                     </div>
                 </div>
@@ -517,7 +517,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/atica.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -557,7 +557,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/telegram-2.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -597,7 +597,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/balloon.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -637,7 +637,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/kickstarter.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -677,7 +677,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/vimeo.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -717,7 +717,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/plurk.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -779,7 +779,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/atica.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -819,7 +819,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/telegram-2.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -859,7 +859,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/balloon.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -899,7 +899,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/kickstarter.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -939,7 +939,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/vimeo.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -979,7 +979,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/plurk.svg" class="me-4 w-30px" style="border-radius: 4px"
+                            <img src="" class="me-4 w-30px" style="border-radius: 4px"
                                 alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1046,7 +1046,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/atica.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1086,7 +1086,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/telegram-2.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1126,7 +1126,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/balloon.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1166,7 +1166,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/kickstarter.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1207,7 +1207,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/vimeo.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1248,7 +1248,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/plurk.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1311,7 +1311,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/atica.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1351,7 +1351,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/telegram-2.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1391,7 +1391,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/balloon.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1431,7 +1431,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/kickstarter.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1472,7 +1472,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/vimeo.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1513,7 +1513,7 @@
                         <!--begin::Section-->
                         <div class="d-flex align-items-center me-5">
                             <!--begin::Flag-->
-                            <img src="assets/media/svg/brand-logos/plurk.svg" class="me-4 w-30px"
+                            <img src="" class="me-4 w-30px"
                                 style="border-radius: 4px" alt="">
                             <!--end::Flag-->
                             <!--begin::Content-->
@@ -1554,3 +1554,36 @@
     </div>
 </div>
 <!--end::Row recent reviews and latest bookings-->
+
+<script>
+    $(async function(){
+
+        async function getDashboardTopInformation(){
+
+            let response = await fetch("/provider/dashboard/top-information", {
+                headers: { 'Content-Type': 'application/json' },
+                method: "POST",
+                body: JSON.stringify({}),
+            });
+
+           let topDashboardInformation = await response.json();
+
+           console.log(topDashboardInformation)
+
+            $("#totalRevenue").html(topDashboardInformation.totalRevenue);
+            $("#totalServicemen").html(topDashboardInformation.totalServicemen);
+            $("#totalServices").html(topDashboardInformation.totalServices);
+            $("#totalBookings").html(topDashboardInformation.totalBookings);
+            $("#totalBalance").html(topDashboardInformation.totalBalance);
+            $("#totalAddedBookings").html(topDashboardInformation.bookingStatusesCount.added);
+            $("#totalOngoingBookings").html(topDashboardInformation.bookingStatusesCount.ongoing);
+            $("#totalOnthewayBookings").html(topDashboardInformation.bookingStatusesCount.ontheway);
+            $("#totalCompletedBookings").html(topDashboardInformation.bookingStatusesCount.completed);
+            $("#totalOnholdBookings").html(topDashboardInformation.bookingStatusesCount.hold);
+            $("#totalCancelledBookings").html(topDashboardInformation.bookingStatusesCount.cancelled);
+        }
+
+        await getDashboardTopInformation();
+    })
+   
+</script>

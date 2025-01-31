@@ -50,18 +50,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({
-  name: 'example.sid',
-  secret: process.env.SESSION_SECRET,
-  httpOnly: true,
-  secure: true,
-  maxAge: 1000 * 60 * 60 * 7,
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URL
-  })
-}));
+
 
 app.use('/', indexRouter);
 app.use('/provider', providersRouter);

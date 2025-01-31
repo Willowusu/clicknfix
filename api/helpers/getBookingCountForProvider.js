@@ -5,6 +5,7 @@ exports.getBookingCountForProvider = async (providerId) => {
     try {
         // Step 1: Find all servicemen tied to the provider
         const servicemen = await Serviceman.find({ provider: providerId }).select('_id');
+        console.log(providerId)
 
         // Extract the servicemen IDs
         const servicemenIds = servicemen.map(s => s._id);

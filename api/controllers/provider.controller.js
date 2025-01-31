@@ -2,6 +2,7 @@ const Provider = require('../models/provider.model');
 const Serviceman = require('../models/serviceman.model');
 const Service = require('../models/service.model');
 const { getBookingCountForProvider } = require('../helpers/getBookingCountForProvider')
+const { countFinalStatus } = require('../helpers/countFinalStatus')
 const bcrypt = require('bcrypt');
 const errsole = require('errsole');
 
@@ -155,11 +156,13 @@ exports.editService = async function (req, res) {
 
 exports.dashboardTopInformation = async function(req, res){
     let requestDetails = req.body
-    let totalRevenue, totalServicemen, totalServices, totalBookings, totalBalance;
+    console.log(requestDetails.providerId)
+    let totalRevenue, totalServicemen, totalServices, totalBookings, totalBalance, bookingStatusesCount;
     try{
         totalServicemen = await Serviceman.countDocuments({ provider: requestDetails.providerId});
         totalServices = await Service.countDocuments({ provider: requestDetails.providerId});
         totalBookings = await getBookingCountForProvider(requestDetails.providerId);
+        bookingStatusesCount = await countFinalStatus(requestDetails.providerId);
         totalRevenue = 0;
         totalBalance = 0
     } catch(error){
@@ -167,16 +170,16 @@ exports.dashboardTopInformation = async function(req, res){
         return res.send({ status: "failed", message: "An error occurred while retrieving the dashboard information"})
     }
 
-    return { totalRevenue, totalServicemen, totalServices, totalBookings, totalBalance }
+    return res.send({ totalRevenue, totalServicemen, totalServices, totalBookings, totalBalance, bookingStatusesCount })
 
 }
 
 exports.dashboardRevenueChart = async function(req, res){
-
+    return res.send({})
 }
 
 exports.dashboardTables = async function(req, res){
-    
+    return res.send({})
 }
 
 

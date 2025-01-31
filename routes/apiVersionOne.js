@@ -3,7 +3,7 @@ const authController = require('../api/controllers/auth.controller');
 const customerController = require('../api/controllers/customer.controller');
 const providerController = require('../api/controllers/provider.controller');
 const servicemanController = require('../api/controllers/serviceman.controller');
-const { requireAuth } = require('../api/middlewares/authenticate.middleware');
+const { authorizeAccess } = require('../api/middlewares/authenticate.middleware');
 var router = express.Router();
 
 
@@ -16,7 +16,7 @@ router.post('/login', authController.login);
 /* Register customer. */
 router.post('/customer/register', customerController.createAccount);
 /* customer creates booking. */
-router.post('/customer/booking/create', requireAuth, customerController.createBooking);
+router.post('/customer/booking/create', authorizeAccess, customerController.createBooking);
 /* Customer views profile. */
 router.post('/customer/profile/view', customerController.viewProfile);
 /* Customer edit profile. */
@@ -48,6 +48,8 @@ router.post('/provider/serviceman/profile/view/all', providerController.viewAllS
 router.post('/provider/service/view', providerController.viewService);
 /* Customer views all service. */
 router.post('/provider/service/view/all', providerController.viewAllService);
+/* Customer views all service. */
+router.post('/provider/dashboard/top-information', providerController.dashboardTopInformation);
 
 
 /****************SERVICEMAN***********************/
