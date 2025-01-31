@@ -1,16 +1,8 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
-    address: {
-        type: String,
-        required: true,
-    },
-    dateTime: {
-        type: Date,
-        required: true
-    },
     customer: {
         type: Schema.Types.ObjectId,
         ref: 'Customer',
@@ -21,37 +13,22 @@ const bookingSchema = new Schema({
         ref: 'Service',
         required: true
     },
-    servicemen: {
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: 'Serviceman',
+    serviceman: {
+        type: Schema.Types.ObjectId,
+        ref: 'ServiceMan',
         required: true
     },
-    customMessage: {
+    status: {
         type: String,
-        default: null
+        enum: ['pending', 'in_progress', 'completed'],
+        default: 'pending',
+        required: true
     },
-    status: [{
-        status: {
-            type: String,
-            enum: ['added', 'accepted', 'assigned', 'ongoing', 'completed', 'declined', 'cancelled', 'ontheway', 'hold'],
-            default: 'added',
-            required: true
-        },
-        date: {
-            type: Date,
-            default: Date.now
-        }
-    }],
-    payment: {
-        type: String,
-        enum: ['cancelled', 'pending', 'completed'],
-        default: 'pending'
-    },
-    bookingId: {
-        type: String,
-        default: Date.now
+    commission_fee: {
+        type: mongoose.Schema.Types.Decimal128,
+        default: null,
+        required: true
     }
-})
+}, { timestamps: true })
 
-const Booking = mongoose.model('Booking', bookingSchema);
-module.exports = Booking;
+module.exports = mongoose.model('Booking', bookingSchema)

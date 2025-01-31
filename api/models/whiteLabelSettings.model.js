@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const serviceSchema = new Schema({
+const whiteLabelSettingsSchema = new Schema({
     provider: {
         type: Schema.Types.ObjectId,
         ref: 'Provider',
         required: true
     },
-    name: {
+    primary_color: {
         type: String,
         required: true
     },
-    description: {
+    logo_url: {
         type: String,
         required: true
     },
-    price: {
-        type: mongoose.Schema.Types.Decimal128,
+    custom_domain: {
+        type: String,
         required: true
     }
 }, { timestamps: true })
 
-module.exports = mongoose.model('Service', serviceSchema)
+module.exports = mongoose.model('WhiteLabelSettings', whiteLabelSettingsSchema)

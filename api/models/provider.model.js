@@ -1,104 +1,33 @@
 const mongoose = require('mongoose');
 
-const {Schema} = mongoose;
+const Schema = mongoose.Schema;
 
 const providerSchema = new Schema({
-    type: {
-        type: String,
-        enum: ['company', 'freelance'],
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    image: {
-        type: String,
-        default: null
-    },
-    name: {
+    business_name: {
         type: String,
         required: true
     },
-    email: {
-        type: String,
+    is_white_labeled: {
+        type: Boolean,
         required: true
     },
-    phone: {
-        type: String,
+    subscription_plan: {
+        type: Schema.Types.ObjectId,
+        ref: 'Subscription',
+        default: null,
         required: true
     },
-    experienceInterval: {
-        type: String,
-        enum: ['months', 'years'],
+    branding: {
+        type: Schema.Types.ObjectId,
+        ref: 'WhiteLabelSettings',
+        default: null,
         required: true
-    },
-    experienceDuration: {
-        type: String,
-        required: true
-    },
-    knownLanguages: {
-        type: [String],
-        default: null
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    address: {
-        type: String,
-        required: true
-    },
-    areaLocality: {
-        type: String,
-        required: true
-    },
-    country: {
-        type: String,
-        required: true
-    },
-    stateRegion: {
-        type: String,
-        required: true
-    },
-    city: {
-        type: String,
-        required: true
-    },
-    postcode: {
-        type: String,
-        default: null
-    },
-    companyLogo: {
-        type: String,
-        required: function () {
-            return this.type === 'company'; // Require if type is "company"
-        },
-        default: null
-    },
-    companyName: {
-        type: String,
-        required: function () {
-            return this.type === 'company'; // Require if type is "company"
-        },
-        default: null
-    },
-    companyEmail: {
-        type: String,
-        required: function () {
-            return this.type === 'company'; // Require if type is "company"
-        },
-        default: null
-    },
-    companyPhone: {
-        type: String,
-        required: function () {
-            return this.type === 'company'; // Require if type is "company"
-        },
-        default: null
-    },
-    companyDescription: {
-        type: String,
-        default: null
     }
+}, { timestamps: true })
 
-})
-
-const Provider = mongoose.model('Provider', providerSchema);
-module.exports = Provider;
+module.exports = mongoose.model('Provider', providerSchema)
