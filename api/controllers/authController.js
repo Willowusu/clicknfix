@@ -22,11 +22,6 @@ const loginUser = async (req, res) => {
             const token = jwt.sign(response.data.data, secretKey, {
                 expiresIn: "1h",
               });
-            //   res.clearCookie("Auth");
-            //   res.cookie("Auth", token, {
-            //     maxAge: 2 * 60 * 60 * 1000,
-            //     httpOnly: true,
-            //   });
               return res.status(200).json({ status: response.data.status, token: token, user });
         } else {
             res.status(404).json({ msg: 'Credentials provided are incorrect' })
