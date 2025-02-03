@@ -19,7 +19,15 @@ const loginUser = async (req, res) => {
     try {
         let user = await User.findOne({ email, role });
         if (user && (await bcrypt.compare(password, user.password))) {
-            res.status(200).json(user)
+            const token = jwt.sign(response.data.data, secretKey, {
+                expiresIn: "1h",
+              });
+            //   res.clearCookie("Auth");
+            //   res.cookie("Auth", token, {
+            //     maxAge: 2 * 60 * 60 * 1000,
+            //     httpOnly: true,
+            //   });
+              return res.status(200).json({ status: response.data.status, token: token, user });
         } else {
             res.status(404).json({ msg: 'Credentials provided are incorrect' })
         }
@@ -27,5 +35,6 @@ const loginUser = async (req, res) => {
         res.status(400).json({ error: error.message })
     }
 }
+
 
 module.exports = { registerUser, loginUser }
