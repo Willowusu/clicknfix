@@ -13,8 +13,12 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['customer', 'provider', 'serviceman', 'admin'],
+        enum: ['client', 'provider', 'serviceman', 'super_admin', 'client_admin'],
         required: true
+    },
+    is_active: {
+        type: Boolean,
+        default: true
     }
 }, { timestamps: true })
 

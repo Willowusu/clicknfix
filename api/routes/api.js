@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const providerController = require('../controllers/providerController');
 const customerController = require('../controllers/customerController');
 const subscriptionPaymentController = require('../controllers/subscriptionPaymentController');
+const bookingController = require('../controllers/bookingController');
 
 /*************************AUTHENTICATION & USER MANAGEMENT********************************/ 
 //Register customer, serviceman, provider
@@ -26,12 +27,12 @@ router.post('/provider/assign-serviceman', providerController.assignServiceman)
 //Get all bookings
 router.get('/provider/bookings', providerController.viewBookings)
 
-/*************************CUSTOMER ACTIONS********************************/
+/*************************BOOKING ACTIONS********************************/
 //Book service
-router.post('/book-service', customerController.bookService)
+router.post('/book-service', bookingController.bookService)
 
 //Get all bookings
-router.get('/bookings', customerController.viewBookings)
+router.put('/update/:bookingId', bookingController.updateBookingStatus)
 
 /*************************SUBSCRIPTION & PAYMENT********************************/
 //Subscribe 
@@ -44,4 +45,4 @@ router.get('/subscription-details', subscriptionPaymentController.subscriptionDe
 router.post('/payment/webhook', subscriptionPaymentController.paymentWebhook)
 
 
-module.exports = router
+module.exports = router;
