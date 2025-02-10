@@ -5,7 +5,8 @@ const branchSchema = new mongoose.Schema(
     {
       name: { 
         type: String, 
-        required: true 
+        required: true,
+        unique: true 
       }, // Branch name (e.g., Accra Main Branch)
       organisation: { 
         type: mongoose.Schema.Types.ObjectId, 

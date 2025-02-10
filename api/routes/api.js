@@ -1,75 +1,97 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const providerController = require('../controllers/providerController');
-const clientController = require('../controllers/clientController');
-const subscriptionPaymentController = require('../controllers/subscriptionPaymentController');
 const bookingController = require('../controllers/bookingController');
+const branchController = require('../controllers/branchController');
+const clientController = require('../controllers/clientController');
+const clientAdminController = require('../controllers/clientAdminController');
 const organisationController = require('../controllers/organisationController');
+const organisationTypeController = require('../controllers/organisationTypeController');
+const paymentController = require('../controllers/paymentController');
+const providerController = require('../controllers/providerController');
+const serviceController = require('../controllers/serviceController');
+const userController = require('../controllers/userController');
+const servicemanController = require('../controllers/servicemanController');
+const subscriptionController = require('../controllers/subscriptionController');
+const whiteLabelSettingsController = require('../controllers/whiteLabelSettingsController');
 
-/*************************AUTHENTICATION & USER MANAGEMENT********************************/ 
-//Register customer, serviceman, provider
-router.post('/register', authController.registerUser)
-
-//Token-based authentication
+/*************************AUTHENTICATION********************************/
 router.post('/login', authController.loginUser)
 
+/*************************BOOKING ACTIONS CRUD********************************/ 
+router.post('/booking', bookingController.createBooking);
+router.get('/booking', bookingController.getBooking);
+router.put('/booking/:id', bookingController.updateBooking);
+router.delete('/booking/:id', bookingController.deleteBooking);
 
-/*************************SERVICE PROVIDER ACTIONS********************************/
-//Create a new service
-router.post('/provider/create-service', providerController.createService);
+/*************************BRANCH ACTIONS CRUD********************************/ 
+router.post('/branch', branchController.createBranch);
+router.get('/branch', branchController.getBranch);
+router.put('/branch/:id', branchController.updateBranch);
+router.delete('/branch/:id', branchController.deleteBranch);
 
-//View all services
-router.get('/provider/services', providerController.viewServices);
+/*************************CLIENT ACTIONS CRUD********************************/ 
+router.post('/client', clientController.createClient);
+router.get('/client', clientController.getClient);
+router.put('/client/:id', clientController.updateClient);
+router.delete('/client/:id', clientController.deleteClient);
 
-//Assign a serviceman
-router.post('/provider/assign-serviceman', providerController.assignServiceman);
+/*************************CLIENT ADMIN ACTIONS CRUD********************************/ 
+router.post('/client-admin', clientAdminController.createClientAdmin);
+router.get('/client-admin', clientAdminController.getClientAdmin);
+router.put('/client-admin/:id', clientAdminController.updateClientAdmin);
+router.delete('/client-admin/:id', clientAdminController.deleteClientAdmin);
 
-//Get all bookings
-router.get('/provider/bookings', providerController.viewBookings);
+/*************************ORGANISATION ACTIONS CRUD********************************/ 
+router.post('/organisation', organisationController.createOrganisation);
+router.get('/organisation', organisationController.getOrganisation);
+router.put('/organisation/:id', organisationController.updateOrganisation);
+router.delete('/organisation/:id', organisationController.deleteOrganisation);
 
+/*************************ORGANISATION TYPE ACTIONS CRUD********************************/ 
+router.post('/organisation-type', organisationTypeController.createOrganisationType);
+router.get('/organisation-type', organisationTypeController.getOrganisationType);
+router.put('/organisation-type/:id', organisationTypeController.updateOrganisationType);
+router.delete('/organisation-type/:id', organisationTypeController.deleteOrganisationType);
 
-/*************************BOOKING ACTIONS********************************/
-//Book service
-router.post('/book-service', bookingController.bookService)
+/*************************PAYMENT TYPE ACTIONS CRUD********************************/ 
+router.post('/payment', paymentController.createPayment);
+router.get('/payment', paymentController.getPayment);
+router.put('/payment/:id', paymentController.updatPayment);
+router.delete('/payment/:id', paymentController.deletePayment);
 
-//Get all bookings
-router.put('/update/:bookingId', bookingController.updateBookingStatus)
+/*************************PROVIDER ACTIONS CRUD********************************/ 
+router.post('/provider', providerController.createPayment);
+router.get('/provider', providerController.getPayment);
+router.put('/provider/:id', providerController.updatPayment);
+router.delete('/provider/:id', providerController.deletePayment);
 
-/*************************SUBSCRIPTION & PAYMENT********************************/
-//Subscribe 
-router.post('/subscribe', subscriptionPaymentController.subscribeToPlan)
+/*************************PROVIDER ACTIONS CRUD********************************/ 
+router.post('/service', serviceController.createService);
+router.get('/service', serviceController.getService);
+router.put('/service/:id', serviceController.updateService);
+router.delete('/service/:id', serviceController.deleteService);
 
-//Get subscription details
-router.get('/subscription-details', subscriptionPaymentController.subscriptionDetails)
+/*************************USER ACTIONS CRUD********************************/ 
+router.post('/user', userController.createUser);
+router.get('/user', userController.getUser);
+router.put('/user/:id', userController.updateUser);
+router.delete('/user/:id', userController.deleteUser);
 
-//Return webhook
-router.post('/payment/webhook', subscriptionPaymentController.paymentWebhook)
+/*************************SERVICEMAN ACTIONS CRUD********************************/ 
+router.post('/serviceman', servicemanController.createServiceman);
+router.get('/serviceman', servicemanController.getServiceman);
+router.put('/serviceman/:id', servicemanController.updateServiceman);
+router.delete('/serviceman/:id', servicemanController.deleteServiceman);
 
-/*************************CLIENT ACTIONS********************************/
-// Self-registration with Organisation & Branch selection
-router.post('/client/register', clientController.register)
+/*************************SUBSCRIPTION ACTIONS CRUD********************************/ 
+router.post('/subscription', subscriptionController.createSubscription);
+router.get('/subscription', subscriptionController.getSubscription);
+router.put('/subscription/:id', subscriptionController.updateSubscription);
+router.delete('/subscription/:id', subscriptionController.deleteSubscription);
 
-/*************************ORGANISATION ACTIONS********************************/
-//Create organisation type
-router.post('/create-organisation-type', organisationController.createOrganisationType)
-
-//Create organisation
-router.post('/create-organisation', organisationController.createOrganisation)
-
-//Create organisation branch
-router.post('/create-organisation-branch', organisationController.createOrganisationBranch)
-
-//List oraganisations
-router.get('/oraganisations', organisationController.listOrganisations)
-
-/*************************ADMIN ACTIONS********************************/
-
-//Add client
-router.post('/admin/add-client', adminController.addClient)
-
-//Send request for a client
-router.post('/admin/request-service', adminController.requestService)
-
-
-module.exports = router;
+/*************************SUBSCRIPTION ACTIONS CRUD********************************/ 
+router.post('/white-label-settings', whiteLabelSettingsController.createWhiteLabelSettings);
+router.get('/white-label-settings', whiteLabelSettingsController.getWhiteLabelSettings);
+router.put('/white-label-settings/:id', whiteLabelSettingsController.updateWhiteLabelSettings);
+router.delete('/white-label-settings/:id', whiteLabelSettingsController.deleteWhiteLabelSettings);

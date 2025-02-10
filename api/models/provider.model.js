@@ -20,7 +20,6 @@ const providerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Subscription',
         default: null,
-        required: true
     },
     branding: {
         type: Schema.Types.ObjectId,

@@ -1,131 +1,99 @@
-const mongoose = require("mongoose");
-const Organisation = require("../models/organisation.model");
-const OrganisationType = require("../models/organisationType.model");
-const Branch = require('../models/branch.model');
-const Provider = require("../models/provider.model");
+const Organisation = require('../models/organisation.model'); // Assuming the model is in /models
+const mongoose = require('mongoose');
 
-
+// ✅ Create Organisation
 exports.createOrganisation = async (req, res) => {
-  const session = await mongoose.startSession(); // Start a database transaction
-  session.startTransaction();
-
   try {
-    const { name, description, organisationType } = req.body;
+    const { name, type, provider, is_active } = req.body;
 
-    // Validate required fields
-    if (!name || !organisationType) {
-      return res.status(400).json({ error: "Name and organisation type are required." });
+    if (!mongoose.Types.ObjectId.isValid(type) || !mongoose.Types.ObjectId.isValid(provider)) {
+      return res.status(400).json({ message: "Invalid ObjectId provided for type or provider" });
     }
 
-    // Check if Organisation Type is valid
-    const orgTypeExists = await OrganisationType.findById(organisationType).session(session);
-    if (!orgTypeExists) {
-      return res.status(404).json({ error: "Invalid Organisation Type." });
-    }
-
-    // Check if Organisation name already exists
-    const orgExists = await Organisation.findOne({ name }).session(session);
-    if (orgExists) {
-      return res.status(400).json({ error: "Organisation with this name already exists." });
-    }
-
-    // Create Organisation
     const newOrganisation = new Organisation({
       name,
-      description: description || "",
-      organisationType,
+      type,
+      provider,
+      is_active: is_active ?? true
     });
 
-    await newOrganisation.save({ session });
-
-    // Commit transaction
-    await session.commitTransaction();
-    session.endSession();
-
-    res.status(201).json({ message: "Organisation created successfully", organisation: newOrganisation });
+    await newOrganisation.save();
+    return res.status(201).json({ message: "Organisation created successfully", organisation: newOrganisation });
 
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    res.status(500).json({ error: error.message });
+    console.error("Error creating organisation:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-exports.createOrganisationType = async (req, res) => {
+// ✅ Get Organisation by ID
+exports.getOrganisation = async (req, res) => {
   try {
-    const { name, description } = req.body;
-
-    // Check if Organisation Type already exists
-    const existingType = await OrganisationType.findOne({ name });
-    if (existingType) {
-      return res.status(400).json({ error: "Organisation Type already exists." });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid organisation ID" });
     }
 
-    // Create Organisation Type
-    const newType = new OrganisationType({
-      name,
-      description: description || "",
-    });
+    const organisation = await Organisation.findById(id)
+      .populate("type")
+      .populate("provider");
 
-    await newType.save();
-    res.status(201).json({ message: "Organisation Type created successfully", organisationType: newType });
+    if (!organisation) {
+      return res.status(404).json({ message: "Organisation not found" });
+    }
+
+    return res.status(200).json(organisation);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error retrieving organisation:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-exports.createOrganisationBranch = async (req, res) => {
+// ✅ Update Organisation
+exports.updateOrganisation = async (req, res) => {
   try {
-    const { name, organisation, location } = req.body;
-
-    // Validate Organisation
-    const org = await Organisation.findById(organisation);
-    if (!org) {
-      return res.status(404).json({ error: "Organisation not found." });
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid organisation ID" });
     }
 
-    // Check if Branch already exists under this Organisation
-    const existingBranch = await Branch.findOne({ name, organisation });
-    if (existingBranch) {
-      return res.status(400).json({ error: "Branch already exists for this Organisation." });
+    if (req.body.type && !mongoose.Types.ObjectId.isValid(req.body.type)) {
+      return res.status(400).json({ message: "Invalid organisation type ID" });
     }
 
-    // Create Branch
-    const newBranch = new Branch({
-      name,
-      organisation,
-      location: location || "",
-    });
+    if (req.body.provider && !mongoose.Types.ObjectId.isValid(req.body.provider)) {
+      return res.status(400).json({ message: "Invalid provider ID" });
+    }
 
-    await newBranch.save();
-    res.status(201).json({ message: "Branch created successfully", branch: newBranch });
+    const updatedOrganisation = await Organisation.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+
+    if (!updatedOrganisation) {
+      return res.status(404).json({ message: "Organisation not found" });
+    }
+
+    return res.status(200).json({ message: "Organisation updated successfully", organisation: updatedOrganisation });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating organisation:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
 
-
-exports.listOrganisations = async (req, res) => {
+// ✅ Delete Organisation
+exports.deleteOrganisation = async (req, res) => {
   try {
-    const { providerId } = req.query; // Optional filtering by Provider
-
-    let query = {};
-    if (providerId) {
-      const providerExists = await Provider.findById(providerId);
-      if (!providerExists) {
-        return res.status(404).json({ error: "Provider not found." });
-      }
-      query.provider = providerId;
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid organisation ID" });
     }
 
-    const organisations = await Organisation.find(query)
-      .populate("organisationType", "name")
-      .populate("provider", "name");
+    const deletedOrganisation = await Organisation.findByIdAndDelete(id);
+    if (!deletedOrganisation) {
+      return res.status(404).json({ message: "Organisation not found" });
+    }
 
-    res.status(200).json({ organisations });
+    return res.status(200).json({ message: "Organisation deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error deleting organisation:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };

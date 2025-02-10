@@ -10,7 +10,8 @@ const paymentSchema = new Schema({
     },
     amount: {
         type: mongoose.Schema.Types.Decimal128,
-        required: true
+        required: true,
+        get: v => v ? parseFloat(v.toString()) : null
     },
     payment_date: {
         type: Date,

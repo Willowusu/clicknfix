@@ -48,6 +48,7 @@ const bookingSchema = new Schema(
     commission_fee: {
       type: mongoose.Schema.Types.Decimal128,
       required: true,
+      get: v => v ? parseFloat(v.toString()) : null
     },
   },
   { timestamps: true }

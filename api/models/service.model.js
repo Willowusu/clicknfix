@@ -18,8 +18,11 @@ const serviceSchema = new Schema({
     },
     price: {
         type: mongoose.Schema.Types.Decimal128,
-        required: true
+        required: true,
+        get: v => v ? parseFloat(v.toString()) : null
     }
 }, { timestamps: true })
+
+serviceSchema.index({ provider: 1 });
 
 module.exports = mongoose.model('Service', serviceSchema)

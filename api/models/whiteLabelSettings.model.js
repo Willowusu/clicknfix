@@ -6,7 +6,8 @@ const whiteLabelSettingsSchema = new Schema({
     provider: {
         type: Schema.Types.ObjectId,
         ref: 'Provider',
-        required: true
+        required: true,
+        unique: true
     },
     primary_color: {
         type: String,

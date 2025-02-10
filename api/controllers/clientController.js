@@ -1,68 +1,103 @@
-const User = require('../models/user.model.js');
-const Client = require('../models/client.model.js');
+const Client = require('../models/client.model'); // Assuming the model is in /models
+const mongoose = require('mongoose');
 
+// ✅ Create Client
+exports.createClient = async (req, res) => {
+  try {
+    const { user, name, phone, organisation, branch } = req.body;
 
-
-const register = async (req, res) => {
-        const session = await mongoose.startSession(); // Start transaction
-        session.startTransaction();
-      
-        try {
-          const { email, password, role, name, phone, organisation, branch } = req.body;
-      
-          // Validate role (ensure it's for a client)
-          if (!["Client", "ClientAdmin"].includes(role)) {
-            return res.status(400).json({ error: "Invalid role. Must be Client or ClientAdmin." });
-          }
-      
-          // Check if email is already registered
-          const existingUser = await User.findOne({ email }).session(session);
-          if (existingUser) {
-            return res.status(400).json({ error: "Email already registered" });
-          }
-      
-          // Hash password
-          const hashedPassword = await bcrypt.hash(password, 10);
-      
-          // Create new User
-          const newUser = new User({
-            email,
-            password: hashedPassword,
-            role,
-          });
-          await newUser.save({ session });
-      
-          // Create new Client
-          const newClient = new Client({
-            user: newUser._id,
-            name,
-            phone,
-            organisation,
-            branch: branch || null,
-          });
-          await newClient.save({ session });
-      
-          // Commit transaction
-          await session.commitTransaction();
-          session.endSession();
-      
-          res.status(201).json({ message: "Registration successful", user: newUser, client: newClient });
-      
-        } catch (error) {
-          await session.abortTransaction();
-          session.endSession();
-          res.status(500).json({ error: error.message });
-        }
-}
-
-const viewBookings = async (req, res) => {
-    const { customer } = req.body
-    try {
-        let bookings = await Booking.find({ customer });
-        res.status(200).json(bookings)
-    } catch (error) {
-        res.status(400).json({ error: error.message })
+    if (!mongoose.Types.ObjectId.isValid(user) ||
+      !mongoose.Types.ObjectId.isValid(organisation) ||
+      !mongoose.Types.ObjectId.isValid(branch)) {
+      return res.status(400).json({ message: "Invalid ObjectId provided" });
     }
-}
 
-module.exports = { register, viewBookings }
+    const newClient = new Client({
+      user,
+      name,
+      phone,
+      organisation,
+      branch
+    });
+
+    await newClient.save();
+    return res.status(201).json({ message: "Client created successfully", client: newClient });
+
+  } catch (error) {
+    console.error("Error creating client:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// ✅ Get Client by ID
+exports.getClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid client ID" });
+    }
+
+    const client = await Client.findById(id)
+      .populate("user")
+      .populate("organisation")
+      .populate("branch");
+
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    return res.status(200).json(client);
+  } catch (error) {
+    console.error("Error retrieving client:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// ✅ Update Client
+exports.updateClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid client ID" });
+    }
+
+    if (req.body.organisation && !mongoose.Types.ObjectId.isValid(req.body.organisation)) {
+      return res.status(400).json({ message: "Invalid organisation ID" });
+    }
+
+    if (req.body.branch && !mongoose.Types.ObjectId.isValid(req.body.branch)) {
+      return res.status(400).json({ message: "Invalid branch ID" });
+    }
+
+    const updatedClient = await Client.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+
+    if (!updatedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    return res.status(200).json({ message: "Client updated successfully", client: updatedClient });
+  } catch (error) {
+    console.error("Error updating client:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};
+
+// ✅ Delete Client
+exports.deleteClient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid client ID" });
+    }
+
+    const deletedClient = await Client.findByIdAndDelete(id);
+    if (!deletedClient) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
+    return res.status(200).json({ message: "Client deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting client:", error);
+    return res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+};

@@ -5,11 +5,13 @@ const Schema = mongoose.Schema;
 const subscriptionSchema = new Schema({
     plan_name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     price: {
         type: mongoose.Schema.Types.Decimal128,
-        required: true
+        required: true,
+        get: v => v ? parseFloat(v.toString()) : null
     },
     service_limit: {
         type: Number,
@@ -17,7 +19,8 @@ const subscriptionSchema = new Schema({
     },
     commission_fee: {
         type: mongoose.Schema.Types.Decimal128,
-        required: true
+        required: true,
+        get: v => v ? parseFloat(v.toString()) : null
     },
     is_white_label: {
         type: Boolean,
