@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+
+const {authorizeAccess, checkRole} = require('../middleware')
+
 const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
 const branchController = require('../controllers/branchController');
@@ -16,82 +19,84 @@ const subscriptionController = require('../controllers/subscriptionController');
 const whiteLabelSettingsController = require('../controllers/whiteLabelSettingsController');
 
 /*************************AUTHENTICATION********************************/
-router.post('/login', authController.loginUser)
+router.post('/login', authController.loginUser); // No auth required
 
-/*************************BOOKING ACTIONS CRUD********************************/ 
-router.post('/booking', bookingController.createBooking);
-router.get('/booking', bookingController.getBooking);
-router.put('/booking/:id', bookingController.updateBooking);
-router.delete('/booking/:id', bookingController.deleteBooking);
+/*************************BOOKING ACTIONS CRUD********************************/
+router.post('/booking', authorizeAccess, checkRole(["client", "client_admin"]), bookingController.createBooking);
+router.get('/booking', authorizeAccess, bookingController.getBooking);
+router.put('/booking/:id', authorizeAccess, checkRole(["client_admin", "super_admin"]), bookingController.updateBooking);
+router.delete('/booking/:id', authorizeAccess, checkRole(["super_admin"]), bookingController.deleteBooking);
 
-/*************************BRANCH ACTIONS CRUD********************************/ 
-router.post('/branch', branchController.createBranch);
-router.get('/branch', branchController.getBranch);
-router.put('/branch/:id', branchController.updateBranch);
-router.delete('/branch/:id', branchController.deleteBranch);
+/*************************BRANCH ACTIONS CRUD********************************/
+router.post('/branch', authorizeAccess, checkRole(["super_admin"]), branchController.createBranch);
+router.get('/branch', authorizeAccess, branchController.getBranch);
+router.put('/branch/:id', authorizeAccess, checkRole(["super_admin"]), branchController.updateBranch);
+router.delete('/branch/:id', authorizeAccess, checkRole(["super_admin"]), branchController.deleteBranch);
 
-/*************************CLIENT ACTIONS CRUD********************************/ 
-router.post('/client', clientController.createClient);
-router.get('/client', clientController.getClient);
-router.put('/client/:id', clientController.updateClient);
-router.delete('/client/:id', clientController.deleteClient);
+/*************************CLIENT ACTIONS CRUD********************************/
+router.post('/client', authorizeAccess, checkRole(["client_admin", "super_admin"]), clientController.createClient);
+router.get('/client', authorizeAccess, clientController.getClient);
+router.put('/client/:id', authorizeAccess, checkRole(["client_admin", "super_admin"]), clientController.updateClient);
+router.delete('/client/:id', authorizeAccess, checkRole(["super_admin"]), clientController.deleteClient);
 
-/*************************CLIENT ADMIN ACTIONS CRUD********************************/ 
-router.post('/client-admin', clientAdminController.createClientAdmin);
-router.get('/client-admin', clientAdminController.getClientAdmin);
-router.put('/client-admin/:id', clientAdminController.updateClientAdmin);
-router.delete('/client-admin/:id', clientAdminController.deleteClientAdmin);
+/*************************CLIENT ADMIN ACTIONS CRUD********************************/
+router.post('/client-admin', authorizeAccess, checkRole(["super_admin"]), clientAdminController.createClientAdmin);
+router.get('/client-admin', authorizeAccess, clientAdminController.getClientAdmin);
+router.put('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), clientAdminController.updateClientAdmin);
+router.delete('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), clientAdminController.deleteClientAdmin);
 
-/*************************ORGANISATION ACTIONS CRUD********************************/ 
-router.post('/organisation', organisationController.createOrganisation);
-router.get('/organisation', organisationController.getOrganisation);
-router.put('/organisation/:id', organisationController.updateOrganisation);
-router.delete('/organisation/:id', organisationController.deleteOrganisation);
+/*************************ORGANISATION ACTIONS CRUD********************************/
+router.post('/organisation', authorizeAccess, checkRole(["super_admin"]), organisationController.createOrganisation);
+router.get('/organisation', authorizeAccess, organisationController.getOrganisation);
+router.put('/organisation/:id', authorizeAccess, checkRole(["super_admin"]), organisationController.updateOrganisation);
+router.delete('/organisation/:id', authorizeAccess, checkRole(["super_admin"]), organisationController.deleteOrganisation);
 
-/*************************ORGANISATION TYPE ACTIONS CRUD********************************/ 
-router.post('/organisation-type', organisationTypeController.createOrganisationType);
-router.get('/organisation-type', organisationTypeController.getOrganisationType);
-router.put('/organisation-type/:id', organisationTypeController.updateOrganisationType);
-router.delete('/organisation-type/:id', organisationTypeController.deleteOrganisationType);
+/*************************ORGANISATION TYPE ACTIONS CRUD********************************/
+router.post('/organisation-type', authorizeAccess, checkRole(["super_admin"]), organisationTypeController.createOrganisationType);
+router.get('/organisation-type', authorizeAccess, organisationTypeController.getOrganisationType);
+router.put('/organisation-type/:id', authorizeAccess, checkRole(["super_admin"]), organisationTypeController.updateOrganisationType);
+router.delete('/organisation-type/:id', authorizeAccess, checkRole(["super_admin"]), organisationTypeController.deleteOrganisationType);
 
-/*************************PAYMENT TYPE ACTIONS CRUD********************************/ 
-router.post('/payment', paymentController.createPayment);
-router.get('/payment', paymentController.getPayment);
-router.put('/payment/:id', paymentController.updatPayment);
-router.delete('/payment/:id', paymentController.deletePayment);
+/*************************PAYMENT ACTIONS CRUD********************************/
+router.post('/payment', authorizeAccess, checkRole(["provider", "super_admin"]), paymentController.createPayment);
+router.get('/payment', authorizeAccess, checkRole(["provider", "super_admin"]), paymentController.getPayment);
+router.put('/payment/:id', authorizeAccess, checkRole(["super_admin"]), paymentController.updatePayment);
+router.delete('/payment/:id', authorizeAccess, checkRole(["super_admin"]), paymentController.deletePayment);
 
-/*************************PROVIDER ACTIONS CRUD********************************/ 
-router.post('/provider', providerController.createPayment);
-router.get('/provider', providerController.getPayment);
-router.put('/provider/:id', providerController.updatPayment);
-router.delete('/provider/:id', providerController.deletePayment);
+/*************************PROVIDER ACTIONS CRUD********************************/
+router.post('/provider', authorizeAccess, checkRole(["super_admin"]), providerController.createProvider);
+router.get('/provider', authorizeAccess, checkRole(["super_admin"]), providerController.getProvider);
+router.put('/provider/:id', authorizeAccess, checkRole(["super_admin"]), providerController.updateProvider);
+router.delete('/provider/:id', authorizeAccess, checkRole(["super_admin"]), providerController.deleteProvider);
 
-/*************************PROVIDER ACTIONS CRUD********************************/ 
-router.post('/service', serviceController.createService);
-router.get('/service', serviceController.getService);
-router.put('/service/:id', serviceController.updateService);
-router.delete('/service/:id', serviceController.deleteService);
+/*************************SERVICE ACTIONS CRUD********************************/
+router.post('/service', authorizeAccess, checkRole(["provider", "super_admin"]), serviceController.createService);
+router.get('/service', authorizeAccess, serviceController.getService);
+router.put('/service/:id', authorizeAccess, checkRole(["provider", "super_admin"]), serviceController.updateService);
+router.delete('/service/:id', authorizeAccess, checkRole(["super_admin"]), serviceController.deleteService);
 
-/*************************USER ACTIONS CRUD********************************/ 
-router.post('/user', userController.createUser);
-router.get('/user', userController.getUser);
-router.put('/user/:id', userController.updateUser);
-router.delete('/user/:id', userController.deleteUser);
+/*************************USER ACTIONS CRUD********************************/
+router.post('/user', authorizeAccess, userController.createUser);
+router.get('/user', authorizeAccess, checkRole(["super_admin"]), userController.getUser);
+router.put('/user/:id', authorizeAccess, checkRole(["super_admin"]), userController.updateUser);
+router.delete('/user/:id', authorizeAccess, checkRole(["super_admin"]), userController.deleteUser);
 
-/*************************SERVICEMAN ACTIONS CRUD********************************/ 
-router.post('/serviceman', servicemanController.createServiceman);
-router.get('/serviceman', servicemanController.getServiceman);
-router.put('/serviceman/:id', servicemanController.updateServiceman);
-router.delete('/serviceman/:id', servicemanController.deleteServiceman);
+/*************************SERVICEMAN ACTIONS CRUD********************************/
+router.post('/serviceman', authorizeAccess, checkRole(["provider", "super_admin"]), servicemanController.createServiceman);
+router.get('/serviceman', authorizeAccess, servicemanController.getServiceman);
+router.put('/serviceman/:id', authorizeAccess, checkRole(["provider", "super_admin"]), servicemanController.updateServiceman);
+router.delete('/serviceman/:id', authorizeAccess, checkRole(["super_admin"]), servicemanController.deleteServiceman);
 
-/*************************SUBSCRIPTION ACTIONS CRUD********************************/ 
-router.post('/subscription', subscriptionController.createSubscription);
-router.get('/subscription', subscriptionController.getSubscription);
-router.put('/subscription/:id', subscriptionController.updateSubscription);
-router.delete('/subscription/:id', subscriptionController.deleteSubscription);
+/*************************SUBSCRIPTION ACTIONS CRUD********************************/
+router.post('/subscription', authorizeAccess, checkRole(["super_admin"]), subscriptionController.createSubscription);
+router.get('/subscription', authorizeAccess, subscriptionController.getSubscription);
+router.put('/subscription/:id', authorizeAccess, checkRole(["super_admin"]), subscriptionController.updateSubscription);
+router.delete('/subscription/:id', authorizeAccess, checkRole(["super_admin"]), subscriptionController.deleteSubscription);
 
-/*************************SUBSCRIPTION ACTIONS CRUD********************************/ 
-router.post('/white-label-settings', whiteLabelSettingsController.createWhiteLabelSettings);
-router.get('/white-label-settings', whiteLabelSettingsController.getWhiteLabelSettings);
-router.put('/white-label-settings/:id', whiteLabelSettingsController.updateWhiteLabelSettings);
-router.delete('/white-label-settings/:id', whiteLabelSettingsController.deleteWhiteLabelSettings);
+/*************************WHITE LABEL SETTINGS ACTIONS CRUD********************************/
+router.post('/white-label-settings', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.createWhiteLabelSettings);
+router.get('/white-label-settings', authorizeAccess, whiteLabelSettingsController.getWhiteLabelSettings);
+router.put('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.updateWhiteLabelSettings);
+router.delete('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.deleteWhiteLabelSettings);
+
+module.exports = router;

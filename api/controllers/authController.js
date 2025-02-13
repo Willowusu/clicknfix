@@ -1,17 +1,25 @@
+const dotenv = require('dotenv')
+// Determine environment (default to development)
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
+
 const User = require('../models/user.model.js');
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.JWT_SECRET;
+
 
 
 const loginUser = async (req, res) => {
     const { email, password, role } = req.body;
     try {
         let user = await User.findOne({ email, role });
+        console.log(user)
         if (user && (await bcrypt.compare(password, user.password))) {
-            const token = jwt.sign(response.data.data, secretKey, {
-                expiresIn: "1h",
+            const token = jwt.sign(user.toJSON(), secretKey, {
+                expiresIn: "2h",
               });
-              return res.status(200).json({ status: response.data.status, token: token, user });
+              return res.status(200).json({ status: "success", token: token, user });
         } else {
             res.status(404).json({ msg: 'Credentials provided are incorrect' })
         }
@@ -21,4 +29,4 @@ const loginUser = async (req, res) => {
 }
 
 
-module.exports = { registerUser, loginUser }
+module.exports = { loginUser }

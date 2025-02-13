@@ -2,7 +2,7 @@ const ServiceMan = require('../models/serviceman.model'); // Assuming the model 
 const mongoose = require('mongoose');
 
 // ✅ Create ServiceMan
-exports.createServiceMan = async (req, res) => {
+exports.createServiceman = async (req, res) => {
     try {
         const { user, provider, name, phone, skills, status, location } = req.body;
 
@@ -34,7 +34,7 @@ exports.createServiceMan = async (req, res) => {
 };
 
 // ✅ Get ServiceMan by ID
-exports.getServiceMan = async (req, res) => {
+exports.getServiceman = async (req, res) => {
     try {
         const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -58,7 +58,7 @@ exports.getServiceMan = async (req, res) => {
 };
 
 // ✅ Update ServiceMan
-exports.updateServiceMan = async (req, res) => {
+exports.updateServiceman = async (req, res) => {
     try {
         const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -91,7 +91,7 @@ exports.updateServiceMan = async (req, res) => {
 };
 
 // ✅ Delete ServiceMan
-exports.deleteServiceMan = async (req, res) => {
+exports.deleteServiceman = async (req, res) => {
     try {
         const { id } = req.params;
         if (!mongoose.Types.ObjectId.isValid(id)) {

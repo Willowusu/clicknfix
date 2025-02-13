@@ -34,26 +34,42 @@ exports.createUser = async (req, res) => {
     }
 };
 
-// ✅ Get User by ID
+// ✅ Get User(s) - By ID, All Users, or Filter by Role
 exports.getUser = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).json({ message: "Invalid user ID" });
+        const { role } = req.query; // Extract role filter from query parameters
+
+        // 🔹 If an ID is provided, return a single user
+        if (id) {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({ message: "Invalid user ID" });
+            }
+
+            const user = await User.findById(id).select('-password'); // Exclude password
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            return res.status(200).json(user);
         }
 
-        const user = await User.findById(id).select('-password');
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
+        // 🔹 If no ID is provided, fetch all users (optionally filtered by role)
+        let filter = {}; // Default: no filters, fetch all users
+        if (role) {
+            filter.role = role; // Apply role filter if provided
         }
 
-        return res.status(200).json(user);
+        const users = await User.find(filter).select('-password'); // Exclude passwords from all users
+
+        return res.status(200).json(users);
     } catch (error) {
-        console.error("Error retrieving user:", error);
+        console.error("Error retrieving user(s):", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
+
 
 // ✅ Update User
 exports.updateUser = async (req, res) => {

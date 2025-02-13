@@ -1,149 +1,60 @@
-require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const axios = require("axios");
-const https = require("https");
-const instance = axios.create({
-  httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-});
-const { Buffer } = require("buffer");
-
-const baseUrl = process.env.BASE_URL;
-const secretKey = process.env.SECRET_KEY;
-const tenantDomain = "test.3ribe.io";
-
-const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 3600 }); // TTL set to 60 minutes (3600 seconds)
-
-async function getFile(tenantID, file) {
-  let imagePrepend = "data:image/png;base64,";
-  let tenantSettingsOptions = {
-    method: "get",
-    url: `${baseUrl}/settings/get-file/${tenantID}/${file}`,
-    headers: {
-      "Content-Type": "application/json",
-    },
-    responseType: "arraybuffer", // Set response type to arraybuffer
-  };
-
-  try {
-    let response = await instance(tenantSettingsOptions);
-    let buffer = Buffer.from(response.data, "binary");
-
-    return `${imagePrepend}${buffer.toString("base64")}`;
-  } catch (error) {
-    console.error("Error fetching file:", error);
-  }
-}
-
+const User = require("./models/user.model"); // Ensure the User model is correctly imported
+const dotenv = require('dotenv')
+// Determine environment (default to development)
+const env = process.env.NODE_ENV || "development";
+dotenv.config({ path: `.env.${env}` });
+const secretKey = process.env.JWT_SECRET;
 
 module.exports = {
+  // ✅ Authenticate user
   authorizeAccess: (req, res, next) => {
     let token;
-    let cookieString = req.headers.cookie;
-    if (!cookieString) {
-      console.log({
-        status: "failed",
-        error: "Auth token is required",
-      });
-      res.status(404).json({ msg: 'Token is required' })
-    }
-    let authCookieArray = cookieString.split("=");
-    const adminAuthHeader = (header) => /adminauth/i.test(header);
-    let authCookieArrayIndex = authCookieArray.findIndex(adminAuthHeader);
 
-    token = authCookieArray[authCookieArrayIndex + 1];
+    // 🔹  check if  Authorization header exists
 
-    if (authCookieArrayIndex == undefined || authCookieArrayIndex === -1) {
-      console.log({
-        status: "failed",
-        error: "Auth token is required",
-      });
-      res.status(404).json({ msg: 'Token is required' })
+    if (!req.headers.authorization){
+      return res.status(401).json({ msg: "Authorization header required." });
     }
-    // invalid token - synchronous
+
+    // 🔹 First check if token exists in the Authorization header
+      token = req.headers.authorization.split(" ")[1];
+
+
+    // 🔹 If no token, return error
+    if (!token) {
+      return res.status(401).json({ msg: "Access denied. Token is required." });
+    }
+
+    // 🔹 Verify token
     try {
       const decoded = jwt.verify(token, secretKey);
-      req.userInfo = decoded;
+      console.log(decoded)
+      req.userInfo = decoded; // Attach user info to request object
       return next();
     } catch (err) {
-      // err
-      console.log({ status: "failed", error: "Invalid token" });
-      res.status(400).json({ msg: 'Token is invalid' })
+      console.log(err)
+      return res.status(401).json({ msg: "Invalid token" });
     }
   },
 
- checkRole:(role, action) => {
-    return (req, res, next) => {
-      const userRole = req.userInfo.role; // Assuming role is added to req.user via JWT
-      const permissions = roles[userRole].can;
+  // ✅ Authorize user role
+  checkRole: (roles) => async (req, res, next) => {
+    try {
+      const user = await User.findById(req.userInfo._id); // Get user by decoded token ID
 
-      if (permissions.includes(action)) {
-        next(); // User has permission, proceed
-      } else {
-        res.status(403).json({ message: "Access Denied" });
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
       }
-    };
+
+      if (!roles.includes(user.role)) {
+        return res.status(403).json({ msg: "Access denied. You do not have permission for this route." });
+      }
+
+      return next(); // User has the required role, proceed
+    } catch (error) {
+      console.error("Role check error:", error);
+      return res.status(500).json({ msg: "Internal server error" });
+    }
   },
-
-  // getTenantSettings: async (req, res, next) => {
-  //   let requestOriginDomain = process.env.NODE_ENV == "production" ? req.headers.host : tenantDomain
-  //   // let requestOriginDomain = tenantDomain; //tenantDomain - comment out after test
-  //   let tenantLogo, tenantFavicon;
-  //   // Check if the data is cached
-  //   const cachedData = cache.get(requestOriginDomain);
-  //   if (cachedData) {
-  //     req.tenantSettings = cachedData;
-  //     return next();
-  //   }
-
-  //   //make request to get tenant settings
-  //   let tenantSettings;
-
-  //   let tenantSettingsOptions = {
-  //     method: "get",
-  //     url: `${baseUrl}/settings/get-domain-all/${requestOriginDomain}`,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   };
-
-  //   try {
-  //     let response = await instance(tenantSettingsOptions);
-  //     tenantSettings = response.data.data;
-
-  //     let tenantID = tenantSettings.id;
-  //     let tenantPrimaryColor = tenantSettings.primary_color;
-
-  //     if (requestOriginDomain === "test.3ribe.io") {
-  //       tenantLogo =
-  //         "https://assets-global.website-files.com/652bfe8cbf55b01d96731aec/652e242eda9971e1c3d2eba9_3ribe%20logo%201.svg";
-  //     } else {
-  //       tenantLogo = tenantSettings.logo;
-  //     }
-  //     if (requestOriginDomain === "test.3ribe.io") {
-  //       tenantFavicon =
-  //         "https://assets-global.website-files.com/652bfe8cbf55b01d96731aec/652e242eda9971e1c3d2eba9_3ribe%20logo%201.svg";
-  //     } else {
-  //       tenantFavicon = tenantSettings.favicon;
-  //     }
-
-  //     let tenantTitle = tenantSettings.title;
-
-  //     req.tenantSettings = {
-  //       tenantID: tenantID,
-  //       tenantPrimaryColor: tenantPrimaryColor,
-  //       tenantLogo: await getFile(tenantID, "logo"),
-  //       tenantFavicon: await getFile(tenantID, "favicon"),
-  //       tenantTitle: tenantTitle,
-  //     };
-
-  //     // Cache the response
-  //     cache.set(requestOriginDomain, req.tenantSettings);
-  //     return next();
-  //   } catch (error) {
-  //     console.log("An error occurred while fetching tenant settings: ", error);
-  //     res.redirect("/login");
-  //   }
-  // },
-
 };
