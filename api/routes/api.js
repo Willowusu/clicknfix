@@ -101,7 +101,9 @@ router.delete('/white-label-settings/:id', authorizeAccess, checkRole(["super_ad
 
 module.exports = router;
 
-
+//setup for db
+//create admin profile
+//create subscription plans
 
 //PROVIDER
 //PROVIDER CREATES ACCOUNT WITH EMAIL AND PASSWORD
