@@ -46,10 +46,10 @@ router.put('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), cli
 router.delete('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), clientAdminController.deleteClientAdmin);
 
 /*************************ORGANISATION ACTIONS CRUD********************************/
-router.post('/organisation', authorizeAccess, checkRole(["super_admin"]), organisationController.createOrganisation);
+router.post('/organisation', authorizeAccess, checkRole(["provider", "super_admin"]), organisationController.createOrganisation);
 router.get('/organisation', authorizeAccess, organisationController.getOrganisation);
-router.put('/organisation/:id', authorizeAccess, checkRole(["super_admin"]), organisationController.updateOrganisation);
-router.delete('/organisation/:id', authorizeAccess, checkRole(["super_admin"]), organisationController.deleteOrganisation);
+router.put('/organisation/:id', authorizeAccess, checkRole(["provider", "super_admin"]), organisationController.updateOrganisation);
+router.delete('/organisation/:id', authorizeAccess, checkRole(["provider", "super_admin"]), organisationController.deleteOrganisation);
 
 /*************************ORGANISATION TYPE ACTIONS CRUD********************************/
 router.post('/organisation-type', authorizeAccess, checkRole(["super_admin"]), organisationTypeController.createOrganisationType);
@@ -64,7 +64,7 @@ router.put('/payment/:id', authorizeAccess, checkRole(["super_admin"]), paymentC
 router.delete('/payment/:id', authorizeAccess, checkRole(["super_admin"]), paymentController.deletePayment);
 
 /*************************PROVIDER ACTIONS CRUD********************************/
-router.post('/provider', authorizeAccess, checkRole(["super_admin"]), providerController.createProvider);
+router.post('/provider', authorizeAccess, checkRole(["provider", "super_admin"]), providerController.createProvider);
 router.get('/provider', authorizeAccess, checkRole(["super_admin"]), providerController.getProvider);
 router.put('/provider/:id', authorizeAccess, checkRole(["super_admin"]), providerController.updateProvider);
 router.delete('/provider/:id', authorizeAccess, checkRole(["super_admin"]), providerController.deleteProvider);
@@ -76,7 +76,7 @@ router.put('/service/:id', authorizeAccess, checkRole(["provider", "super_admin"
 router.delete('/service/:id', authorizeAccess, checkRole(["super_admin"]), serviceController.deleteService);
 
 /*************************USER ACTIONS CRUD********************************/
-router.post('/user', authorizeAccess, userController.createUser);
+router.post('/user', userController.createUser);
 router.get('/user', authorizeAccess, checkRole(["super_admin"]), userController.getUser);
 router.put('/user/:id', authorizeAccess, checkRole(["super_admin"]), userController.updateUser);
 router.delete('/user/:id', authorizeAccess, checkRole(["super_admin"]), userController.deleteUser);
@@ -94,9 +94,17 @@ router.put('/subscription/:id', authorizeAccess, checkRole(["super_admin"]), sub
 router.delete('/subscription/:id', authorizeAccess, checkRole(["super_admin"]), subscriptionController.deleteSubscription);
 
 /*************************WHITE LABEL SETTINGS ACTIONS CRUD********************************/
-router.post('/white-label-settings', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.createWhiteLabelSettings);
+router.post('/white-label-settings', authorizeAccess, checkRole(["provider", "super_admin"]), whiteLabelSettingsController.createWhiteLabelSettings);
 router.get('/white-label-settings', authorizeAccess, whiteLabelSettingsController.getWhiteLabelSettings);
 router.put('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.updateWhiteLabelSettings);
 router.delete('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.deleteWhiteLabelSettings);
 
 module.exports = router;
+
+
+
+//PROVIDER
+//PROVIDER CREATES ACCOUNT WITH EMAIL AND PASSWORD
+//PROVIDER SELECTS A SUBSCRIPTION PLAN
+//IF IT INVOLVES BRANDING THEY GO AHEAD AND SETUP THEIR WHITE LABEL SETTIMGS
+//PROVIDER COMPLETES REGISTRATION BY PROVIDING OTHER DETAILS TOO

@@ -1,36 +1,27 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const Schema = mongoose.Schema;
-
-const subscriptionSchema = new Schema({
-    plan_name: {
+const SubscriptionSchema = new mongoose.Schema({
+    name: { type: String, required: true, unique: true },
+    type: {
         type: String,
-        required: true,
-        unique: true
-    },
-    price: {
-        type: mongoose.Schema.Types.Decimal128,
-        required: true,
-        get: v => v ? parseFloat(v.toString()) : null
-    },
-    service_limit: {
-        type: Number,
+        enum: ["white_label", "open_marketplace"],
         required: true
     },
-    commission_fee: {
-        type: mongoose.Schema.Types.Decimal128,
-        required: true,
-        get: v => v ? parseFloat(v.toString()) : null
-    },
-    is_white_label: {
-        type: Boolean,
-        required: true
-    },
-    custom_domain: {
-        type: Boolean,
-        required: true
-    }
+    price: { type: Number, required: true, default: 0 },
+    billingCycle: { type: String, enum: ["monthly", "yearly"], required: true },
+    commissionPercentage: { type: Number, required: true, default: 0 },
+    maxServicemen: { type: Number, required: true, default: 0 },
+    maxBranches: { type: Number, required: true, default: 0 },
+    maxClients: { type: String, required: true, default: "unlimited" },
 
-}, { timestamps: true })
+    // Features
+    customBranding: { type: Boolean, default: false },
+    prioritySupport: { type: Boolean, default: false },
+    analyticsDashboard: { type: Boolean, default: false },
+    whiteLabelDomain: { type: Boolean, default: false },
+    featuredListing: { type: Boolean, default: false },
 
-module.exports = mongoose.model('Subscription', subscriptionSchema)
+    // Timestamps
+}, { timestamps: true });
+
+module.exports = mongoose.model("Subscription", SubscriptionSchema);

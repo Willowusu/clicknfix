@@ -1567,11 +1567,6 @@
         "description": "",
         "parameters": [
           {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -1599,9 +1594,6 @@
           },
           "400": {
             "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
           },
           "500": {
             "description": "Internal Server Error"
@@ -1929,22 +1921,43 @@
             "schema": {
               "type": "object",
               "properties": {
-                "plan_name": {
+                "name": {
+                  "example": "any"
+                },
+                "type": {
                   "example": "any"
                 },
                 "price": {
                   "example": "any"
                 },
-                "service_limit": {
+                "billingCycle": {
                   "example": "any"
                 },
-                "commission_fee": {
+                "commissionPercentage": {
                   "example": "any"
                 },
-                "is_white_label": {
+                "maxServicemen": {
                   "example": "any"
                 },
-                "custom_domain": {
+                "maxBranches": {
+                  "example": "any"
+                },
+                "maxClients": {
+                  "example": "any"
+                },
+                "customBranding": {
+                  "example": "any"
+                },
+                "prioritySupport": {
+                  "example": "any"
+                },
+                "analyticsDashboard": {
+                  "example": "any"
+                },
+                "whiteLabelDomain": {
+                  "example": "any"
+                },
+                "featuredListing": {
                   "example": "any"
                 }
               }

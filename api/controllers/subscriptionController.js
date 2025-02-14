@@ -1,22 +1,48 @@
 const Subscription = require('../models/subscription.model'); // Assuming the model is in /models
 const mongoose = require('mongoose');
 
+
+
 // ✅ Create Subscription
 exports.createSubscription = async (req, res) => {
     try {
-        const { plan_name, price, service_limit, commission_fee, is_white_label, custom_domain } = req.body;
+        const { 
+            name, type, price, billingCycle, commissionPercentage, 
+            maxServicemen, maxBranches, maxClients, 
+            customBranding, prioritySupport, analyticsDashboard, 
+            whiteLabelDomain, featuredListing 
+        } = req.body;
 
-        if (!plan_name || !price || !service_limit || !commission_fee) {
-            return res.status(400).json({ message: "Plan name, price, service limit, and commission fee are required." });
+        // ✅ Validate required fields
+        if (!name || !type || !price || !billingCycle || commissionPercentage === undefined) {
+            return res.status(400).json({ message: "Missing required fields." });
         }
 
+        // ✅ Validate subscription type
+        if (!["white_label", "open_marketplace"].includes(type)) {
+            return res.status(400).json({ message: "Invalid subscription type." });
+        }
+
+        // ✅ Validate billing cycle
+        if (!["monthly", "yearly"].includes(billingCycle)) {
+            return res.status(400).json({ message: "Invalid billing cycle." });
+        }
+
+        // ✅ Create new subscription
         const newSubscription = new Subscription({
-            plan_name,
+            name,
+            type,
             price,
-            service_limit,
-            commission_fee,
-            is_white_label,
-            custom_domain
+            billingCycle,
+            commissionPercentage,
+            maxServicemen: maxServicemen || 0,
+            maxBranches: maxBranches || 0,
+            maxClients: maxClients || "unlimited",
+            customBranding: customBranding || false,
+            prioritySupport: prioritySupport || false,
+            analyticsDashboard: analyticsDashboard || false,
+            whiteLabelDomain: whiteLabelDomain || false,
+            featuredListing: featuredListing || false
         });
 
         await newSubscription.save();
@@ -26,7 +52,8 @@ exports.createSubscription = async (req, res) => {
         console.error("Error creating subscription:", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
-};
+
+}
 
 // ✅ Get Subscription by ID
 exports.getSubscription = async (req, res) => {

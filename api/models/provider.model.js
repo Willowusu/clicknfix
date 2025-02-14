@@ -25,7 +25,6 @@ const providerSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'WhiteLabelSettings',
         default: null,
-        required: true
     }
 }, { timestamps: true })
 

@@ -36,6 +36,7 @@ app.use((err, req, res, next) => {
     });
 });
 
+
 //connect to db
 mongoose.connect(process.env.MONGO_URL).then(() => {
     //listen for request
