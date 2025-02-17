@@ -17,7 +17,7 @@ const clientAdminSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organisation", required: true
     },
-    branches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Branch" }],
+    branches: [{ type: mongoose.Schema.Types.ObjectId, ref: "Branch", default: [] }],
     canRequestServicesForClients: {
         type: Boolean,
         default: true

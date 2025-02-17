@@ -28,7 +28,7 @@ router.put('/booking/:id', authorizeAccess, checkRole(["client_admin", "super_ad
 router.delete('/booking/:id', authorizeAccess, checkRole(["super_admin"]), bookingController.deleteBooking);
 
 /*************************BRANCH ACTIONS CRUD********************************/
-router.post('/branch', authorizeAccess, checkRole(["super_admin"]), branchController.createBranch);
+router.post('/branch', authorizeAccess, checkRole(["provider", "super_admin"]), branchController.createBranch);
 router.get('/branch', authorizeAccess, branchController.getBranch);
 router.put('/branch/:id', authorizeAccess, checkRole(["super_admin"]), branchController.updateBranch);
 router.delete('/branch/:id', authorizeAccess, checkRole(["super_admin"]), branchController.deleteBranch);
@@ -40,7 +40,7 @@ router.put('/client/:id', authorizeAccess, checkRole(["client_admin", "super_adm
 router.delete('/client/:id', authorizeAccess, checkRole(["super_admin"]), clientController.deleteClient);
 
 /*************************CLIENT ADMIN ACTIONS CRUD********************************/
-router.post('/client-admin', authorizeAccess, checkRole(["super_admin"]), clientAdminController.createClientAdmin);
+router.post('/client-admin', authorizeAccess, checkRole(["provider", "super_admin"]), clientAdminController.createClientAdmin);
 router.get('/client-admin', authorizeAccess, clientAdminController.getClientAdmin);
 router.put('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), clientAdminController.updateClientAdmin);
 router.delete('/client-admin/:id', authorizeAccess, checkRole(["super_admin"]), clientAdminController.deleteClientAdmin);
@@ -104,9 +104,14 @@ module.exports = router;
 //setup for db
 //create admin profile
 //create subscription plans
+//create organisation types
 
 //PROVIDER
 //PROVIDER CREATES ACCOUNT WITH EMAIL AND PASSWORD
 //PROVIDER SELECTS A SUBSCRIPTION PLAN
-//IF IT INVOLVES BRANDING THEY GO AHEAD AND SETUP THEIR WHITE LABEL SETTIMGS
+//IF IT INVOLVES BRANDING THEY GO AHEAD AND SETUP THEIR WHITE LABEL SETTINGS
 //PROVIDER COMPLETES REGISTRATION BY PROVIDING OTHER DETAILS TOO
+//PROVIDER ADDS THE ORGANISATION AND CATEGORISES THEM ACCORDING TO THE TYPES
+//PROVIDER ADDS CLIENT ADMINS
+
+//PROVIDER OR CLIENT ADMIN CAN THEN CREATE BRANCHES

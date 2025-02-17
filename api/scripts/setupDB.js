@@ -8,8 +8,9 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 // Import models
-const User = require("./models/user.model");
-const Subscription = require("./models/subscription.model");
+const User = require("../models/user.model");
+const Subscription = require("../models/subscription.model");
+const OrganisationType = require("../models/organisationType.model");
 
 // Database connection
 const connectDB = async () => {
@@ -111,11 +112,42 @@ const createSubscriptions = async () => {
     }
 };
 
+// Function to insert organisation types
+const insertOrganisationTypes = async () => {
+    // Organisation Types Data
+    const organisationTypes = [
+        { name: "Banking & Finance", description: "Banks, insurance firms, investment companies." },
+        { name: "Healthcare", description: "Hospitals, clinics, pharmacies, diagnostics." },
+        { name: "Education", description: "Universities, schools, online learning platforms." },
+        { name: "Retail & E-Commerce", description: "Supermarkets, online stores, malls." },
+        { name: "Hospitality & Travel", description: "Hotels, restaurants, travel agencies." },
+        { name: "Real Estate", description: "Property management, real estate agencies, construction firms." },
+        { name: "Technology & IT", description: "Software firms, IT consulting, cybersecurity companies." },
+        { name: "Manufacturing & Industry", description: "Automobile, textile, chemical manufacturing." },
+        { name: "Telecommunications", description: "Mobile networks, internet service providers." },
+        { name: "Government & Public Services", description: "Ministries, government agencies, public utilities." }
+    ];
+    try {
+        for (const orgType of organisationTypes) {
+            const exists = await OrganisationType.findOne({ name: orgType.name });
+            if (!exists) {
+                await new OrganisationType(orgType).save();
+                console.log(`✅ Organisation Type '${orgType.name}' created.`);
+            } else {
+                console.log(`✅ Organisation Type '${orgType.name}' already exists.`);
+            }
+        }
+    } catch (error) {
+        console.error("❌ Error inserting organisation types:", error);
+    }
+};
+
 // Run setup process
 const setupDatabase = async () => {
     await connectDB();
     await createSuperAdmin();
     await createSubscriptions();
+    await insertOrganisationTypes();
     console.log("✅ Database setup completed.");
     process.exit();
 };
