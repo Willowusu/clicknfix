@@ -16,7 +16,7 @@ const bookingSchema = new Schema(
     },
     requested_by_role: {
       type: String,
-      enum: ['Customer', 'ClientAdmin'], // Determines whether a client or an admin made the request
+      enum: ['client', 'client_admin'], // Determines whether a client or an admin made the request
       required: true,
     },
     service: {
