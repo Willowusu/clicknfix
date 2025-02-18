@@ -1,8 +1,8 @@
 const dotenv = require('dotenv')
 // Determine environment (default to development)
-const env = process.env.NODE_ENV || "development";
-dotenv.config({ path: `.env.${env}` });
-
+// const env = process.env.NODE_ENV || "development";
+// dotenv.config({ path: `.env.${env}` });
+dotenv.config()
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");

@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("./models/user.model"); // Ensure the User model is correctly imported
 const dotenv = require('dotenv')
 // Determine environment (default to development)
-const env = process.env.NODE_ENV || "development";
-dotenv.config({ path: `.env.${env}` });
+// const env = process.env.NODE_ENV || "development";
+// dotenv.config({ path: `.env.${env}` });
+dotenv.config()
 const secretKey = process.env.JWT_SECRET;
 
 module.exports = {
