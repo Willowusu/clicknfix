@@ -1,8 +1,4 @@
-const dotenv = require('dotenv')
-// Determine environment (default to development)
-// const env = process.env.NODE_ENV || "development";
-// dotenv.config({ path: `.env.${env}` });
-dotenv.config()
+require('dotenv').config()
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
@@ -11,6 +7,9 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/user.model");
 const Subscription = require("../models/subscription.model");
 const OrganisationType = require("../models/organisationType.model");
+const ServiceCategory = require("../models/serviceCategory.model");
+const NotificationTemplate = require("../models/notificationTemplate.model");
+const SystemSettings = require("../models/systemSettings.model");
 
 // Database connection
 const connectDB = async () => {
@@ -142,12 +141,153 @@ const insertOrganisationTypes = async () => {
     }
 };
 
+// Function to create default service categories
+const createServiceCategories = async () => {
+    const categories = [
+        {
+            name: "Home Maintenance",
+            description: "General home repairs and maintenance services",
+            subcategories: ["Plumbing", "Electrical", "Carpentry", "HVAC", "Painting"]
+        },
+        {
+            name: "Cleaning",
+            description: "Professional cleaning services",
+            subcategories: ["House Cleaning", "Office Cleaning", "Deep Cleaning", "Carpet Cleaning"]
+        },
+        {
+            name: "Technology",
+            description: "Tech support and installation services",
+            subcategories: ["Computer Repair", "Network Setup", "Smart Home Installation"]
+        },
+        {
+            name: "Beauty & Wellness",
+            description: "Personal care and wellness services",
+            subcategories: ["Hair Styling", "Massage", "Nail Care", "Spa Services"]
+        },
+        {
+            name: "Automotive",
+            description: "Vehicle maintenance and repair services",
+            subcategories: ["Car Repair", "Car Wash", "Oil Change", "Tire Service"]
+        }
+    ];
+
+    try {
+        for (const category of categories) {
+            const exists = await ServiceCategory.findOne({ name: category.name });
+            if (!exists) {
+                await new ServiceCategory(category).save();
+                console.log(`✅ Service Category '${category.name}' created.`);
+            } else {
+                console.log(`✅ Service Category '${category.name}' already exists.`);
+            }
+        }
+    } catch (error) {
+        console.error("❌ Error creating service categories:", error);
+    }
+};
+
+// Function to create notification templates
+const createNotificationTemplates = async () => {
+    const templates = [
+        {
+            type: "booking_created",
+            channel: "email",
+            subject: "New Booking Confirmation",
+            content: "Dear {{customerName}}, your booking #{{bookingId}} has been created successfully. A service provider will be assigned shortly.",
+            variables: ["customerName", "bookingId"]
+        },
+        {
+            type: "booking_assigned",
+            channel: "email",
+            subject: "Service Provider Assigned",
+            content: "Your booking #{{bookingId}} has been assigned to {{servicemanName}}. They will arrive at {{scheduledTime}}.",
+            variables: ["bookingId", "servicemanName", "scheduledTime"]
+        },
+        {
+            type: "booking_completed",
+            channel: "email",
+            subject: "Service Completed",
+            content: "Your service has been completed. Please rate your experience with {{servicemanName}}.",
+            variables: ["servicemanName"]
+        },
+        {
+            type: "chat_message",
+            channel: "push",
+            subject: "New Message",
+            content: "{{senderName}}: {{messagePreview}}",
+            variables: ["senderName", "messagePreview"]
+        }
+    ];
+
+    try {
+        for (const template of templates) {
+            const exists = await NotificationTemplate.findOne({ 
+                type: template.type,
+                channel: template.channel 
+            });
+            if (!exists) {
+                await new NotificationTemplate(template).save();
+                console.log(`✅ Notification Template '${template.type}' for ${template.channel} created.`);
+            } else {
+                console.log(`✅ Notification Template '${template.type}' for ${template.channel} already exists.`);
+            }
+        }
+    } catch (error) {
+        console.error("❌ Error creating notification templates:", error);
+    }
+};
+
+// Function to create system settings
+const createSystemSettings = async () => {
+    const settings = {
+        booking: {
+            autoAssignmentEnabled: true,
+            maxActiveBookingsPerServiceman: 5,
+            defaultBookingExpiryHours: 24,
+            cancellationWindowHours: 2
+        },
+        notification: {
+            emailEnabled: true,
+            smsEnabled: true,
+            pushEnabled: true,
+            reminderIntervals: [24, 2] // hours before booking
+        },
+        payment: {
+            currencies: ["USD", "EUR", "GBP"],
+            defaultCurrency: "USD",
+            platformFeePercentage: 10,
+            minimumPayout: 50
+        },
+        security: {
+            passwordMinLength: 8,
+            passwordRequiresSpecialChar: true,
+            sessionTimeoutMinutes: 60,
+            maxLoginAttempts: 5
+        }
+    };
+
+    try {
+        const existingSettings = await SystemSettings.findOne({});
+        if (!existingSettings) {
+            await new SystemSettings(settings).save();
+            console.log("✅ System Settings created.");
+        } else {
+            console.log("✅ System Settings already exist.");
+        }
+    } catch (error) {
+        console.error("❌ Error creating system settings:", error);
+    }
+};
+
 // Run setup process
 const setupDatabase = async () => {
     await connectDB();
     await createSuperAdmin();
     await createSubscriptions();
     await insertOrganisationTypes();
+    await createServiceCategories();
+    await createNotificationTemplates();
+    await createSystemSettings();
     console.log("✅ Database setup completed.");
     process.exit();
 };

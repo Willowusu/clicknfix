@@ -1,8 +1,4 @@
-const dotenv = require('dotenv')
-// Determine environment (default to development)
-// const env = process.env.NODE_ENV || "development";
-// dotenv.config({ path: `.env.${env}` });
-dotenv.config()
+require('dotenv').config()
 
 const User = require('../models/user.model.js');
 const bcrypt = require('bcrypt');

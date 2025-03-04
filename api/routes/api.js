@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const {authorizeAccess, checkRole} = require('../middleware')
+const { authorizeAccess, checkRole } = require('../middleware')
 
 const authController = require('../controllers/authController');
 const bookingController = require('../controllers/bookingController');
@@ -17,15 +17,24 @@ const userController = require('../controllers/userController');
 const servicemanController = require('../controllers/servicemanController');
 const subscriptionController = require('../controllers/subscriptionController');
 const whiteLabelSettingsController = require('../controllers/whiteLabelSettingsController');
+const chatController = require('../controllers/chatController');
+const analyticsController = require('../controllers/analyticsController');
+const notificationController = require('../controllers/notificationController');
+
+// Import middleware
+const { authenticate, authorize } = require('../middleware/auth');
+const { validateRequest } = require('../middleware/validation');
+const { rateLimiter } = require('../middleware/rateLimiter');
+const { cacheResponse } = require('../middleware/cache');
 
 /*************************AUTHENTICATION********************************/
 router.post('/login', authController.loginUser); // No auth required
 
 /*************************BOOKING ACTIONS CRUD********************************/
-router.post('/booking', authorizeAccess, checkRole(["client", "client_admin"]), bookingController.createBooking);
-router.get('/booking', authorizeAccess, bookingController.getBooking);
-router.put('/booking/:id', authorizeAccess, checkRole(["client_admin", "super_admin"]), bookingController.updateBooking);
-router.delete('/booking/:id', authorizeAccess, checkRole(["super_admin"]), bookingController.deleteBooking);
+router.post('/bookings', authenticate, validateRequest('createBooking'), bookingController.createBooking);
+router.get('/bookings/:id', authenticate, bookingController.getBooking);
+router.put('/bookings/:id', authenticate, validateRequest('updateBooking'), bookingController.updateBooking);
+router.delete('/bookings/:id', authenticate, authorize(['admin']), bookingController.deleteBooking);
 
 /*************************BRANCH ACTIONS CRUD********************************/
 router.post('/branch', authorizeAccess, checkRole(["provider", "super_admin"]), branchController.createBranch);
@@ -70,10 +79,10 @@ router.put('/provider/:id', authorizeAccess, checkRole(["super_admin"]), provide
 router.delete('/provider/:id', authorizeAccess, checkRole(["super_admin"]), providerController.deleteProvider);
 
 /*************************SERVICE ACTIONS CRUD********************************/
-router.post('/service', authorizeAccess, checkRole(["provider", "super_admin"]), serviceController.createService);
-router.get('/service', authorizeAccess, serviceController.getService);
-router.put('/service/:id', authorizeAccess, checkRole(["provider", "super_admin"]), serviceController.updateService);
-router.delete('/service/:id', authorizeAccess, checkRole(["super_admin"]), serviceController.deleteService);
+router.post('/services', authenticate, authorize(['admin', 'provider']), validateRequest('createService'), serviceController.createService);
+router.get('/services/:id', authenticate, serviceController.getService);
+router.put('/services/:id', authenticate, authorize(['admin', 'provider']), validateRequest('updateService'), serviceController.updateService);
+router.delete('/services/:id', authenticate, authorize(['admin', 'provider']), serviceController.deleteService);
 
 /*************************USER ACTIONS CRUD********************************/
 router.post('/user', userController.createUser);
@@ -98,6 +107,30 @@ router.post('/white-label-settings', authorizeAccess, checkRole(["provider", "su
 router.get('/white-label-settings', authorizeAccess, whiteLabelSettingsController.getWhiteLabelSettings);
 router.put('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.updateWhiteLabelSettings);
 router.delete('/white-label-settings/:id', authorizeAccess, checkRole(["super_admin"]), whiteLabelSettingsController.deleteWhiteLabelSettings);
+
+/*************************CHAT ACTIONS CRUD********************************/
+router.post('/chats', authenticate, validateRequest('createChat'), chatController.createChat);
+router.get('/chats/:id', authenticate, chatController.getChat);
+router.post('/chats/:id/messages', authenticate, validateRequest('sendMessage'), chatController.sendMessage);
+router.put('/chats/:id/read', authenticate, chatController.markAsRead);
+router.get('/chats', authenticate, chatController.getUserChats);
+router.put('/chats/:id/archive', authenticate, validateRequest('archiveChat'), chatController.archiveChat);
+router.get('/chats/stats', authenticate, authorize(['admin', 'provider']), chatController.getChatStats);
+
+/*************************ANALYTICS ACTIONS CRUD********************************/
+router.post('/analytics', authenticate, authorize(['admin', 'provider']), validateRequest('generateAnalytics'), analyticsController.generateAnalytics);
+router.get('/analytics', authenticate, authorize(['admin', 'provider']), cacheResponse(300), analyticsController.getAnalytics);
+router.get('/analytics/revenue', authenticate, authorize(['admin', 'provider']), cacheResponse(300), analyticsController.getRevenueInsights);
+router.get('/analytics/performance', authenticate, authorize(['admin', 'provider']), cacheResponse(300), analyticsController.getPerformanceMetrics);
+
+/*************************NOTIFICATION ACTIONS CRUD********************************/
+router.post('/notifications', authenticate, validateRequest('createNotification'), rateLimiter('notifications'), notificationController.createNotification);
+router.get('/notifications/user/:userId', authenticate, notificationController.getUserNotifications);
+router.put('/notifications/:id/read', authenticate, notificationController.markAsRead);
+router.put('/notifications/read-all', authenticate, notificationController.markAllAsRead);
+router.delete('/notifications/:id', authenticate, notificationController.deleteNotification);
+router.get('/notifications/preferences', authenticate, notificationController.getPreferences);
+router.put('/notifications/preferences', authenticate, validateRequest('updatePreferences'), notificationController.updatePreferences);
 
 module.exports = router;
 

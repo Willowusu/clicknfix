@@ -2,11 +2,8 @@ const dotenv = require('dotenv')
 const express = require('express');
 const mongoose = require('mongoose');
 const apiRoutes = require('./routes/api')
+require('dotenv').config()
 
-// Determine environment (default to development)
-// const env = process.env.NODE_ENV || "development";
-// dotenv.config({ path: `.env.${env}` });
-dotenv.config()
 
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger-output.json')
