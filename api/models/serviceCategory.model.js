@@ -41,8 +41,10 @@ const serviceCategorySchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Index for faster searches
-serviceCategorySchema.index({ name: 1 });
+// Index for faster searches on isActive only
 serviceCategorySchema.index({ isActive: 1 });
+
+// The name field already has a unique index from the schema definition
+// so we don't need to define it again
 
 module.exports = mongoose.model('ServiceCategory', serviceCategorySchema); 

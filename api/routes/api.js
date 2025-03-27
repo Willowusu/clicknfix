@@ -20,6 +20,9 @@ const whiteLabelSettingsController = require('../controllers/whiteLabelSettingsC
 const chatController = require('../controllers/chatController');
 const analyticsController = require('../controllers/analyticsController');
 const notificationController = require('../controllers/notificationController');
+const systemSettingsController = require('../controllers/systemSettingsController');
+const notificationTemplateController = require('../controllers/notificationTemplateController');
+const serviceCategoryController = require('../controllers/serviceCategoryController');
 
 // Import middleware
 const { authenticate, authorize } = require('../middleware/auth');
@@ -84,6 +87,12 @@ router.get('/services/:id', authenticate, serviceController.getService);
 router.put('/services/:id', authenticate, authorize(['admin', 'provider']), validateRequest('updateService'), serviceController.updateService);
 router.delete('/services/:id', authenticate, authorize(['admin', 'provider']), serviceController.deleteService);
 
+/*************************SERVICE ACTIONS CRUD********************************/
+router.post('/services', authenticate, authorize(['admin', 'provider']), validateRequest('createService'), serviceController.createService);
+router.get('/services/:id', authenticate, serviceController.getService);
+router.put('/services/:id', authenticate, authorize(['admin', 'provider']), validateRequest('updateService'), serviceController.updateService);
+router.delete('/services/:id', authenticate, authorize(['admin', 'provider']), serviceController.deleteService);
+
 /*************************USER ACTIONS CRUD********************************/
 router.post('/user', userController.createUser);
 router.get('/user', authorizeAccess, checkRole(["super_admin"]), userController.getUser);
@@ -131,6 +140,24 @@ router.put('/notifications/read-all', authenticate, notificationController.markA
 router.delete('/notifications/:id', authenticate, notificationController.deleteNotification);
 router.get('/notifications/preferences', authenticate, notificationController.getPreferences);
 router.put('/notifications/preferences', authenticate, validateRequest('updatePreferences'), notificationController.updatePreferences);
+
+/*************************SYSTEM SETTINGS ACTIONS CRUD********************************/
+router.post('/system-settings', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.createSystemSettings);
+router.get('/system-settings', authorizeAccess, systemSettingsController.getSystemSettings);
+router.put('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.updateSystemSettings);
+router.delete('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.deleteSystemSettings);
+
+/*************************NOTIFICATION TEMPLATE ACTIONS CRUD********************************/
+router.post('/notification-templates', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.createNotificationTemplate);
+router.get('/notification-templates', authorizeAccess, notificationTemplateController.getNotificationTemplates);
+router.put('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.updateNotificationTemplate);
+router.delete('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.deleteNotificationTemplate);
+
+/*************************SERVICE CATEGORY ACTIONS CRUD********************************/
+router.post('/service-categories', authorizeAccess, checkRole(["provider", "super_admin"]), serviceCategoryController.createServiceCategory);
+router.get('/service-categories', authorizeAccess, serviceCategoryController.getServiceCategories);
+router.put('/service-categories/:id', authorizeAccess, checkRole(["provider", "super_admin"]), serviceCategoryController.updateServiceCategory);
+router.delete('/service-categories/:id', authorizeAccess, checkRole(["super_admin"]), serviceCategoryController.deleteServiceCategory);
 
 module.exports = router;
 
