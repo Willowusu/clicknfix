@@ -2,6 +2,7 @@ const Client = require('../models/Client');
 const Branch = require('../models/Branch');
 const Organization = require('../models/Organization');
 const User = require('../models/User');
+const Provider = require('../models/Provider'); // Assuming Provider model is defined
 const response = require('../utils/response'); // Assuming a utility for standard responses
 const bcrypt = require('bcryptjs'); // Assuming bcrypt is installed and required
 
@@ -74,71 +75,170 @@ exports.getClients = async (req, res) => {
 // Create a new client and assign them to a branch
 exports.createClient = async (req, res) => {
   try {
-    const { name, email, branchId } = req.body;
+    const { role, user } = req;
+    const { name, email, password, phone, branchId } = req.body;
 
-    // Validate if the branch exists
-    const branch = await Branch.findById(branchId);
-    if (!branch) {
-      return res.status(400).json(response(400, 'error', null, 'Invalid branch ID'));
+    // Only providers can create clients
+    if (role !== 'provider') {
+      return res.status(403).json(response(403, 'error', null, 'Only providers can create clients'));
     }
 
-    // Create the new client
-    const newClient = new Client({
+    // Validate required fields
+    if (!name || !email || !password || !branchId) {
+      return res.status(400).json(response(400, 'error', null, 'Name, email, password, and branch ID are required'));
+    }
+
+    // Validate the provider exists
+    const provider = await Provider.findById(user.provider);
+    if (!provider) {
+      return res.status(404).json(response(404, 'error', null, 'Provider not found'));
+    }
+
+    // Validate if the branch exists and belongs to the provider's organization
+    const branch = await Branch.findOne({ 
+      _id: branchId,
+      organization: provider.organization
+    });
+    
+    if (!branch) {
+      return res.status(404).json(response(404, 'error', null, 'Branch not found or access denied'));
+    }
+
+    // Check if email is already registered
+    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    if (existingUser) {
+      return res.status(400).json(response(400, 'error', null, 'Email is already registered'));
+    }
+
+    // Create the user record
+    const clientUser = new User({
       name,
-      email,
-      branch: branchId
+      email: email.toLowerCase(),
+      password, // Will be hashed by the User model pre-save middleware
+      phone,
+      role: 'client',
+      organization: provider.organization,
+      provider: provider._id,
+      branch: branchId,
+      isActive: true
+    });
+
+    await clientUser.save();
+
+    // Create the client record
+    const newClient = new Client({
+      user: clientUser._id,
+      name,
+      email: email.toLowerCase(),
+      phone,
+      organization: provider.organization,
+      provider: provider._id,
+      branch: branchId,
+      isActive: true,
+      joinedAt: new Date()
     });
 
     await newClient.save();
 
-    return res.status(201).json(response(201, 'success', newClient, 'Client created successfully and assigned to branch'));
+    // Populate the response data
+    const populatedClient = await Client.findById(newClient._id)
+      .populate('organization', 'name type')
+      .populate('provider', 'name')
+      .populate('branch', 'name location')
+      .populate('user', '-password');
+
+    return res.status(201).json(response(201, 'success', populatedClient, 'Client created successfully'));
   } catch (error) {
+    console.error('Error in createClient:', error);
     return res.status(500).json(response(500, 'error', null, 'Server error while creating client'));
   }
 };
 
-// Update client details (e.g., branch assignment, client info)
+// Update client details
 exports.updateClient = async (req, res) => {
   try {
+    const { role, user } = req;
     const { id } = req.params;
-    const { name, email, branchId } = req.body;
+    const { name, email, phone, branchId, isActive } = req.body;
 
-    // If branchId is provided, check if it's a valid branch
+    // Only providers can update clients
+    if (role !== 'provider') {
+      return res.status(403).json(response(403, 'error', null, 'Only providers can update clients'));
+    }
+
+    // Validate the provider exists
+    const provider = await Provider.findById(user.provider);
+    if (!provider) {
+      return res.status(404).json(response(404, 'error', null, 'Provider not found'));
+    }
+
+    // Find the client and ensure they belong to the provider
+    const client = await Client.findOne({
+      _id: id,
+      provider: user.provider
+    });
+
+    if (!client) {
+      return res.status(404).json(response(404, 'error', null, 'Client not found or access denied'));
+    }
+
+    // If changing branch, validate it belongs to provider's organization
     if (branchId) {
-      const branch = await Branch.findById(branchId);
+      const branch = await Branch.findOne({ 
+        _id: branchId,
+        organization: provider.organization
+      });
+      
       if (!branch) {
-        return res.status(400).json(response(400, 'error', null, 'Invalid branch ID'));
+        return res.status(404).json(response(404, 'error', null, 'Branch not found or access denied'));
       }
     }
 
-    // Update the client details
-    const updatedClient = await Client.findByIdAndUpdate(id, { name, email, branch: branchId }, { new: true });
-
-    if (!updatedClient) {
-      return res.status(404).json(response(404, 'error', null, 'Client not found'));
+    // If changing email, check if new email is already in use
+    if (email && email.toLowerCase() !== client.email) {
+      const existingUser = await User.findOne({ 
+        email: email.toLowerCase(),
+        _id: { $ne: client.user }
+      });
+      
+      if (existingUser) {
+        return res.status(400).json(response(400, 'error', null, 'Email is already registered'));
+      }
     }
+
+    // Update the client record
+    const updatedClient = await Client.findByIdAndUpdate(
+      id,
+      {
+        ...(name && { name }),
+        ...(email && { email: email.toLowerCase() }),
+        ...(phone && { phone }),
+        ...(branchId && { branch: branchId }),
+        ...(isActive !== undefined && { isActive })
+      },
+      { new: true }
+    )
+    .populate('organization', 'name type')
+    .populate('provider', 'name')
+    .populate('branch', 'name location')
+    .populate('user', '-password');
+
+    // Update the associated user record
+    await User.findByIdAndUpdate(
+      client.user,
+      {
+        ...(name && { name }),
+        ...(email && { email: email.toLowerCase() }),
+        ...(phone && { phone }),
+        ...(branchId && { branch: branchId }),
+        ...(isActive !== undefined && { isActive })
+      }
+    );
 
     return res.status(200).json(response(200, 'success', updatedClient, 'Client updated successfully'));
   } catch (error) {
+    console.error('Error in updateClient:', error);
     return res.status(500).json(response(500, 'error', null, 'Server error while updating client'));
-  }
-};
-
-// Delete a client
-exports.deleteClient = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Delete the client from the database
-    const deletedClient = await Client.findByIdAndDelete(id);
-
-    if (!deletedClient) {
-      return res.status(404).json(response(404, 'error', null, 'Client not found'));
-    }
-
-    return res.status(200).json(response(200, 'success', null, 'Client deleted successfully'));
-  } catch (error) {
-    return res.status(500).json(response(500, 'error', null, 'Server error while deleting client'));
   }
 };
 
@@ -352,5 +452,54 @@ exports.deleteClientAdmin = async (req, res) => {
   } catch (error) {
     console.error('Error deleting client admin:', error);
     return res.status(500).json(response(500, 'error', null, 'Server error while deleting client admin'));
+  }
+};
+
+// Delete a client
+exports.deleteClient = async (req, res) => {
+  try {
+    const { role, user } = req;
+    const { id } = req.params;
+
+    // Only providers can delete clients
+    if (role !== 'provider') {
+      return res.status(403).json(response(403, 'error', null, 'Only providers can delete clients'));
+    }
+
+    // Validate the provider exists
+    const provider = await Provider.findById(user.provider);
+    if (!provider) {
+      return res.status(404).json(response(404, 'error', null, 'Provider not found'));
+    }
+
+    // Find the client and ensure they belong to the provider
+    const client = await Client.findOne({
+      _id: id,
+      provider: user.provider
+    });
+
+    if (!client) {
+      return res.status(404).json(response(404, 'error', null, 'Client not found or access denied'));
+    }
+
+    // TODO: Check for active bookings or other dependencies
+    // const activeBookings = await Booking.countDocuments({ 
+    //   client: id,
+    //   status: { $in: ['pending', 'confirmed', 'in_progress'] }
+    // });
+    // if (activeBookings > 0) {
+    //   return res.status(400).json(response(400, 'error', null, 'Cannot delete client with active bookings'));
+    // }
+
+    // Delete the client record
+    await Client.findByIdAndDelete(id);
+
+    // Delete the associated user record
+    await User.findByIdAndDelete(client.user);
+
+    return res.status(200).json(response(200, 'success', null, 'Client and associated user account deleted successfully'));
+  } catch (error) {
+    console.error('Error in deleteClient:', error);
+    return res.status(500).json(response(500, 'error', null, 'Server error while deleting client'));
   }
 };

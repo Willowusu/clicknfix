@@ -2,7 +2,7 @@
   <div class="col-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <h4 class="card-title">All CLient Admins</h4>
+        <h4 class="card-title">All Client Admins</h4>
         <p class="card-description"> Add class <code>.table</code>
         </p>
         <div id="client_admins-table"></div>
@@ -18,7 +18,8 @@
     columns: [
       "Name",
       "Address",
-      "Organization"
+      "Organization",
+      "Branch"
     ],
     server: {
       method: "GET",
@@ -29,6 +30,8 @@
           client_admin.username,
           client_admin.email,
           client_admin.organization?.name || "N/A",
+          client_admin.branch?.name || "N/A"
+
         ]);
       },
     },

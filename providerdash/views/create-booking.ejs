@@ -3,32 +3,151 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Create Booking</h4>
-        <p class="card-description"> Basic form layout </p>
-        <form class="forms-sample">
+        <form id="bookingForm" class="forms-sample">
           <div class="form-group">
-            <label for="exampleInputUsername1">Username</label>
-            <input type="text" class="form-control" id="exampleInputUsername1" placeholder="Username">
+            <label for="clientId">Select Client</label>
+            <select class="form-control" id="clientId" required>
+              <option value="">Choose...</option>
+            </select>
           </div>
+
           <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+            <!-- <label for="branchId">Branch</label> -->
+            <input type="hidden" class="form-control" id="branchId" readonly>
           </div>
+
           <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            <label for="serviceId">Select Service</label>
+            <select class="form-control" id="serviceId" required>
+              <option value="">Loading...</option>
+            </select>
           </div>
+
           <div class="form-group">
-            <label for="exampleInputConfirmPassword1">Confirm Password</label>
-            <input type="password" class="form-control" id="exampleInputConfirmPassword1" placeholder="Password">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" required>
           </div>
-          <div class="form-check form-check-flat form-check-primary">
-            <label class="form-check-label">
-              <input type="checkbox" class="form-check-input"> Remember me </label>
+
+          <div class="form-group">
+            <label for="time">Time</label>
+            <input type="time" class="form-control" id="time" required>
           </div>
-          <button type="submit" class="btn btn-primary me-2">Submit</button>
-          <button class="btn btn-light">Cancel</button>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" rows="3" placeholder="Enter booking details"
+              required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="image">Upload Image (optional)</label>
+            <input type="file" class="form-control-file" id="image">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-light">Cancel</button>
         </form>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  const clientSelect = document.getElementById('clientId');
+  const branchField = document.getElementById('branchId');
+  const serviceSelect = document.getElementById('serviceId');
+
+  // Fetch clients and populate the dropdown
+  async function loadClients() {
+    try {
+      const response = await fetch('/api/clients'); // Update with actual endpoint
+      const data = await response.json();
+
+      if (response.ok) {
+        clientSelect.innerHTML = '<option value="">Choose...</option>'; // Reset dropdown
+        data.data.clients.forEach(client => {
+          clientSelect.innerHTML += `<option value="${client.user._id}"
+                                    data-branch="${client.branch ? client.branch._id : ''}">
+                                    ${client.user.username} - ${client.user.email}
+                                  </option>`;
+        });
+      } else {
+        console.error('Error loading clients:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching clients:', error);
+    }
+  }
+
+  // Auto-fill branch when a client is selected
+  clientSelect.addEventListener('change', function () {
+    const selectedOption = this.options[this.selectedIndex];
+    branchField.value = selectedOption.getAttribute('data-branch') || 'N/A';
+  });
+
+  // Fetch available services
+  async function loadServices() {
+    try {
+      const response = await fetch('/api/services'); // Update with actual endpoint
+      const data = await response.json();
+
+      if (response.ok) {
+        serviceSelect.innerHTML = '<option value="">Choose...</option>'; // Reset services dropdown
+        data.data.services.forEach(service => {
+          serviceSelect.innerHTML += `<option value="${service._id}">${service.name} (${service.category.name})</option>`;
+        });
+      } else {
+        console.error('Error loading services:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching services:', error);
+    }
+  }
+
+  // Handle form submission
+  document.getElementById('bookingForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('clientId', clientSelect.value);
+    formData.append('branchId', branchField.value);
+    formData.append('serviceId', serviceSelect.value);
+    formData.append('date', document.getElementById('date').value);
+    formData.append('time', document.getElementById('time').value);
+    formData.append('description', document.getElementById('description').value);
+
+    const imageFile = document.getElementById('image').files[0];
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    var formObject = {};
+    formData.forEach((value, key) => formObject[key] = value);
+
+    try {
+      const response = await fetch('/api/bookings/create', {
+        method: 'POST',
+         headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formObject)
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        alert('Booking created successfully!');
+        location.reload();
+      } else {
+        alert(result.message.message || 'Error creating booking');
+      }
+    } catch (error) {
+      alert('Server error, please try again');
+    }
+  });
+
+  // Load clients and services when the page loads
+  document.addEventListener('DOMContentLoaded', () => {
+    loadClients();
+    loadServices();
+  });
+</script>

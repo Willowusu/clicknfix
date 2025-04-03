@@ -8,11 +8,12 @@ const Branch = require('../models/Branch');
 const ServiceCategory = require('../models/ServiceCategory');
 const Service = require('../models/Service');
 const Serviceman = require('../models/Serviceman');
+const Client = require('../models/Client');
 const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
 const Subscription = require('../models/Subscription');
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/clicknfix';
+const MONGODB_URI = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/clicknfix';
 
 async function seedDatabase() {
   try {
@@ -30,6 +31,7 @@ async function seedDatabase() {
       ServiceCategory.deleteMany({}),
       Service.deleteMany({}),
       Serviceman.deleteMany({}),
+      Client.deleteMany({}),
       Booking.deleteMany({}),
       Payment.deleteMany({}),
       Subscription.deleteMany({}),
@@ -49,19 +51,23 @@ async function seedDatabase() {
     // Create Provider Admin User
     const providerAdmin = await User.create({
       username: 'provider_admin',
+      name: 'Provider Admin',
       email: 'admin@clicknfix.com',
       password: hashedPassword,
       role: 'provider',
       provider: provider._id,
+      isActive: true
     });
     console.log('Created provider admin user');
 
     // Create Super Admin
     await User.create({
       username: 'super_admin',
+      name: 'Super Admin',
       email: 'superadmin@clicknfix.com',
       password: hashedPassword,
       role: 'super-admin',
+      isActive: true
     });
     console.log('Created super admin');
 
@@ -133,19 +139,25 @@ async function seedDatabase() {
     const clientAdmins = await User.insertMany([
       {
         username: 'techcorp_admin',
+        name: 'TechCorp Admin',
         email: 'admin@techcorp.com',
         password: hashedPassword,
         role: 'client-admin',
         branch: branches[0]._id,
         organization: organizations[0]._id,
+        provider: provider._id,
+        isActive: true
       },
       {
         username: 'mega_admin',
+        name: 'MegaServices Admin',
         email: 'admin@megaservices.com',
         password: hashedPassword,
         role: 'client-admin',
         branch: branches[2]._id,
         organization: organizations[1]._id,
+        provider: provider._id,
+        isActive: true
       },
     ]);
     console.log('Created client admins');
@@ -205,92 +217,168 @@ async function seedDatabase() {
     // Create Servicemen
     const servicemen = await Serviceman.insertMany([
       {
-        name: 'John Doe',
+        name: 'John Smith',
         email: 'john@clicknfix.com',
-        phone: '+1987654321',
-        specialization: 'IT Support',
+        phone: '+1234567893',
         jobTitle: 'Senior IT Technician',
-        branch: branches[0]._id,
         provider: provider._id,
+        assignedServices: [services[0]._id, services[1]._id],
+        isActive: true
       },
       {
-        name: 'Jane Smith',
-        email: 'jane@clicknfix.com',
-        phone: '+1987654322',
-        specialization: 'Network Engineer',
+        name: 'Sarah Johnson',
+        email: 'sarah@clicknfix.com',
+        phone: '+1234567894',
         jobTitle: 'Network Specialist',
-        branch: branches[1]._id,
         provider: provider._id,
+        assignedServices: [services[1]._id],
+        isActive: true
       },
+      {
+        name: 'Mike Brown',
+        email: 'mike@clicknfix.com',
+        phone: '+1234567895',
+        jobTitle: 'Hardware Technician',
+        provider: provider._id,
+        assignedServices: [services[2]._id],
+        isActive: true
+      }
     ]);
     console.log('Created servicemen');
 
-    // Create Clients
-    const clients = await User.insertMany([
+    // Create Clients with associated User accounts
+    const clientsData = [
       {
-        username: 'client1',
-        email: 'client1@techcorp.com',
-        password: hashedPassword,
-        role: 'client',
+        name: 'Alice Cooper',
+        email: 'alice@techcorp.com',
+        phone: '+1234567896',
         branch: branches[0]._id,
         organization: organizations[0]._id,
       },
       {
-        username: 'client2',
-        email: 'client2@megaservices.com',
-        password: hashedPassword,
-        role: 'client',
+        name: 'Bob Wilson',
+        email: 'bob@techcorp.com',
+        phone: '+1234567897',
+        branch: branches[1]._id,
+        organization: organizations[0]._id,
+      },
+      {
+        name: 'Carol Davis',
+        email: 'carol@megaservices.com',
+        phone: '+1234567898',
         branch: branches[2]._id,
         organization: organizations[1]._id,
-      },
-    ]);
+      }
+    ];
+
+    const clients = [];
+    for (const clientData of clientsData) {
+      // Create user account
+      const clientUser = await User.create({
+        username: clientData.email.split('@')[0], // Use first part of email as username
+        name: clientData.name,
+        email: clientData.email,
+        password: hashedPassword,
+        phone: clientData.phone,
+        role: 'client',
+        organization: clientData.organization,
+        provider: provider._id,
+        branch: clientData.branch,
+        isActive: true
+      });
+
+      // Create client record
+      const client = await Client.create({
+        user: clientUser._id,
+        name: clientData.name,
+        email: clientData.email,
+        phone: clientData.phone,
+        organization: clientData.organization,
+        provider: provider._id,
+        branch: clientData.branch,
+        isActive: true,
+        joinedAt: new Date()
+      });
+
+      clients.push(client);
+    }
     console.log('Created clients');
 
-    // Create Bookings
+    // Create some bookings
     const bookings = await Booking.insertMany([
       {
         client: clients[0]._id,
         service: services[0]._id,
         serviceman: servicemen[0]._id,
-        branch: branches[0]._id,
-        bookingTime: new Date('2025-04-15T10:00:00Z'),
+        scheduledDate: new Date(Date.now() + 24 * 60 * 60 * 1000), // Tomorrow
         status: 'pending',
-        description: 'Need help with desktop computer issues',
-        image: 'desktop-issue.jpg'
+        description: 'Description for tomorrow',
+        provider: provider._id,
+        bookingTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        organization: organizations[0]._id,
+        branch: branches[0]._id
       },
       {
         client: clients[1]._id,
         service: services[1]._id,
         serviceman: servicemen[1]._id,
-        branch: branches[2]._id,
-        bookingTime: new Date('2025-04-16T14:00:00Z'),
-        status: 'in-progress',
-        description: 'Network setup for new office',
-        image: 'network-setup-request.jpg'
-      },
+        scheduledDate: new Date(Date.now() + 48 * 60 * 60 * 1000), // Day after tomorrow
+        status: 'completed',
+        description: 'Description for day after tomorrow',
+        provider: provider._id,
+        bookingTime: new Date(Date.now() + 48 * 60 * 60 * 1000),
+        organization: organizations[0]._id,
+        branch: branches[1]._id
+      }
     ]);
     console.log('Created bookings');
 
-    // Create Subscriptions
-    await Subscription.insertMany([
+    // Create subscriptions
+    // const subscriptions = await Subscription.insertMany([
+    //   {
+    //     organization: organizations[0]._id,
+    //     provider: provider._id,
+    //     plan: 'premium',
+    //     startDate: new Date(),
+    //     endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+    //     status: 'active',
+    //     price: 999.99
+    //   },
+    //   {
+    //     organization: organizations[1]._id,
+    //     provider: provider._id,
+    //     plan: 'basic',
+    //     startDate: new Date(),
+    //     endDate: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 6 months from now
+    //     status: 'active',
+    //     price: 499.99
+    //   }
+    // ]);
+    // console.log('Created subscriptions');
+
+    // Create payments for bookings
+    await Payment.insertMany([
       {
+        booking: bookings[0]._id,
+        amount: services[0].price,
+        status: 'pending',
+        provider: provider._id,
+        organization: organizations[0]._id,
         client: clients[0]._id,
-        service: services[0]._id,
-        startDate: new Date('2025-04-01'),
-        endDate: new Date('2026-04-01'),
-        status: 'active',
-        price: 800.00,
+        paymentMethod: 'credit_card'
       },
       {
+        booking: bookings[1]._id,
+        amount: services[1].price,
+        status: 'completed',
+        provider: provider._id,
+        organization: organizations[0]._id,
         client: clients[1]._id,
-        service: services[1]._id,
-        startDate: new Date('2025-04-01'),
-        endDate: new Date('2026-04-01'),
-        status: 'active',
-        price: 1500.00,
-      },
+        paymentMethod: 'bank_transfer',
+        paidAt: new Date()
+      }
     ]);
-    console.log('Created subscriptions');
+    console.log('Created payments');
 
     console.log('Database seeded successfully!');
     process.exit(0);

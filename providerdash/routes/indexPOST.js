@@ -53,7 +53,7 @@ router.get(
   async function (req, res, next) {
     let reqDetails = req.body;
     try {
-      let response = await apiService('/booking', 'GET', reqDetails, {Authorization: req.headers.authorization});
+      let response = await apiService('/booking', 'GET', reqDetails, { Authorization: req.headers.authorization });
 
       if (response.status !== "success") {
         return res.send(response)
@@ -275,6 +275,40 @@ router.get(
         status: "failed",
         data: {
           message: "An error occurred while fetching all servicmen",
+        }
+      });
+    }
+  }
+);
+
+
+router.post(
+  "/bookings/create",
+  authorizeAccess,
+  async function (req, res, next) {
+    let reqDetails = req.body;
+
+    console.log({ reqDetails })
+    try {
+      let response = await apiService('/booking/create', 'POST', reqDetails, { Authorization: req.headers.authorization });
+      console.log({ response })
+
+      if (response.status !== "success") {
+        return res.send(response)
+      }
+
+
+
+      return res.status(200).send({ status: response.status, data: { servicemen: response.data } });
+    } catch (error) {
+      console.log(
+        "An error occurred while creating the booking: ",
+        error
+      );
+      return res.send({
+        status: "failed",
+        data: {
+          message: "An error occurred while creating the booking",
         }
       });
     }

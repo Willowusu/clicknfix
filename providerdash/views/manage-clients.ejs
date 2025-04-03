@@ -27,7 +27,7 @@
       url: '/api/clients',
       then: (data) => {
         return data.data.clients.map((client) => [
-          client.user.name,
+          client.user.username,
           client.user.email,
           client.organization?.name || "N/A",
           client.branch?.name || "N/A",

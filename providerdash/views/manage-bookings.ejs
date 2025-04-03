@@ -31,7 +31,13 @@
       url: '/api/bookings',
       then: (data) => {
         return data.data.bookings.map((booking) => [
-          booking.client?.name || "N/A",
+           gridjs.html(`
+            <div>
+              ${booking.client?.username || "N/A"}<br>
+              <small class="text-muted">${booking.client?.email || "N/A"}</small>
+            </div>
+          `) ,
+
           // booking.image,
           booking.description,
           booking.branch?.name || "N/A",
