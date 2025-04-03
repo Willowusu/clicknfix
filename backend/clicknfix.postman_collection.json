@@ -1,0 +1,1182 @@
+{
+	"info": {
+		"_postman_id": "random-uuid",
+		"name": "ClickNFix API",
+		"description": "API collection for ClickNFix application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"John Doe\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "logout"]
+						}
+					}
+				},
+				{
+					"name": "Get Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/auth/profile/update",
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "profile", "update"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Get All Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "bookings", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"serviceId\": \"service_id\",\n    \"date\": \"2025-04-02\",\n    \"time\": \"14:00\",\n    \"notes\": \"Booking notes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "bookings", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "booking_id"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"confirmed\",\n    \"notes\": \"Updated booking notes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Booking",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/bookings/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "bookings", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "booking_id"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Provider",
+			"item": [
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get All Clients",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/clients",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "clients"]
+						}
+					}
+				},
+				{
+					"name": "Create Client",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/clients/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "clients", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Client Name\",\n    \"email\": \"client@example.com\",\n    \"phone\": \"1234567890\",\n    \"branchId\": \"branch_id_here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Client",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/clients/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "clients", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "client_id_here"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Client Name\",\n    \"email\": \"updated@example.com\",\n    \"phone\": \"0987654321\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Client",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/clients/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "clients", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "client_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/branches",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "branches"]
+						}
+					}
+				},
+				{
+					"name": "Create Branch",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/branches/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "branches", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Branch Name\",\n    \"address\": \"Branch Address\",\n    \"phone\": \"1234567890\",\n    \"email\": \"branch@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Branch",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/branches/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "branches", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "branch_id_here"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Branch Name\",\n    \"address\": \"Updated Address\",\n    \"phone\": \"0987654321\",\n    \"email\": \"updated@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Branch",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/branches/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "branches", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "branch_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Organizations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/organizations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "organizations"]
+						}
+					}
+				},
+				{
+					"name": "Create Organization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/organizations/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "organizations", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Organization Name\",\n    \"description\": \"Organization Description\",\n    \"type\": \"business\",\n    \"address\": \"Organization Address\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Organization",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/organizations/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "organizations", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organization_id_here"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Organization Name\",\n    \"description\": \"Updated Description\",\n    \"address\": \"Updated Address\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Organization",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/organizations/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "organizations", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organization_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/services",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "services"]
+						}
+					}
+				},
+				{
+					"name": "Create Service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/services/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "services", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Service Name\",\n    \"description\": \"Service Description\",\n    \"price\": 99.99,\n    \"duration\": 60,\n    \"categoryId\": \"category_id_here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Service",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "service_id_here"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Service Name\",\n    \"description\": \"Updated Description\",\n    \"price\": 149.99,\n    \"duration\": 90\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Service",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/services/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "services", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "service_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Service Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/service-categories",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "service-categories"]
+						}
+					}
+				},
+				{
+					"name": "Create Service Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/service-categories/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "service-categories", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Category Name\",\n    \"description\": \"Category Description\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Get Servicemen",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/servicemen",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "servicemen"]
+						}
+					}
+				},
+				{
+					"name": "Create Serviceman",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/servicemen/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "servicemen", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Serviceman Name\",\n    \"email\": \"serviceman@example.com\",\n    \"phone\": \"1234567890\",\n    \"skills\": [\"skill1\", \"skill2\"],\n    \"branchId\": \"branch_id_here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Serviceman",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/servicemen/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "servicemen", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "serviceman_id_here"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\",\n    \"phone\": \"0987654321\",\n    \"skills\": [\"updated_skill1\", \"updated_skill2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete Serviceman",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/provider/servicemen/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "provider", "servicemen", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "serviceman_id_here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Organization Types",
+					"item": [
+						{
+							"name": "Get Organization Types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/provider/organization-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provider", "organization-types"]
+								},
+								"description": "Get list of available organization types (read-only for providers)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Organizations",
+					"item": [
+						{
+							"name": "Create Organization",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Test Organization\",\n    \"address\": \"123 Test St\",\n    \"contactNumber\": \"+1234567890\",\n    \"organizationTypeId\": \"{{organization_type_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provider/organizations/create",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provider", "organizations", "create"]
+								}
+							}
+						},
+						{
+							"name": "Update Organization",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Organization\",\n    \"address\": \"456 Updated St\",\n    \"contactNumber\": \"+0987654321\",\n    \"organizationTypeId\": \"{{organization_type_id}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/provider/organizations/{{organization_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "provider", "organizations", "{{organization_id}}"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Super Admin",
+			"item": [
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Create Provider",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/providers/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "providers", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Provider Name\",\n    \"email\": \"provider@example.com\",\n    \"phone\": \"1234567890\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "users"]
+						}
+					}
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/users/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "users", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"User Name\",\n    \"email\": \"user@example.com\",\n    \"role\": \"client\",\n    \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Name\",\n    \"email\": \"updated@example.com\",\n    \"role\": \"client-admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/users/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "users", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/subscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "subscriptions"]
+						}
+					}
+				},
+				{
+					"name": "Create Subscription",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/super-admin/subscriptions/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "super-admin", "subscriptions", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Subscription Plan\",\n    \"price\": 99.99,\n    \"duration\": \"monthly\",\n    \"features\": [\"feature1\", \"feature2\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Organization Types",
+					"item": [
+						{
+							"name": "Get Organization Types",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/super-admin/organization-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "super-admin", "organization-types"]
+								},
+								"description": "Get list of all organization types"
+							}
+						},
+						{
+							"name": "Create Organization Type",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"New Type\",\n    \"description\": \"Description of the new organization type\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/super-admin/organization-types",
+									"host": ["{{base_url}}"],
+									"path": ["api", "super-admin", "organization-types"]
+								},
+								"description": "Create a new organization type"
+							}
+						},
+						{
+							"name": "Update Organization Type",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Updated Type\",\n    \"description\": \"Updated description\",\n    \"isActive\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/super-admin/organization-types/{{organization_type_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "super-admin", "organization-types", "{{organization_type_id}}"]
+								},
+								"description": "Update an existing organization type"
+							}
+						},
+						{
+							"name": "Delete Organization Type",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/api/super-admin/organization-types/{{organization_type_id}}",
+									"host": ["{{base_url}}"],
+									"path": ["api", "super-admin", "organization-types", "{{organization_type_id}}"]
+								},
+								"description": "Delete an organization type (only if not in use)"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Client Admin",
+			"item": [
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get All Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Get Branch Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/bookings/:branchId",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "bookings", ":branchId"],
+							"variable": [
+								{
+									"key": "branchId",
+									"value": "branch_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/bookings/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "bookings", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"branchId\": \"branch_id\",\n    \"serviceId\": \"service_id\",\n    \"clientId\": \"client_id\",\n    \"date\": \"2025-04-02\",\n    \"time\": \"14:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/bookings/:id/update",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "bookings", ":id", "update"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "booking_id"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"date\": \"2025-04-02T14:00:00.000Z\",\n    \"serviceId\": \"service_id_here\",\n    \"clientId\": \"client_id_here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Get Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/branches",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "branches"]
+						}
+					}
+				},
+				{
+					"name": "Get Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/payments",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "payments"]
+						}
+					}
+				},
+				{
+					"name": "Get Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client-admin/subscriptions",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client-admin", "subscriptions"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Client",
+			"item": [
+				{
+					"name": "Get Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client/dashboard",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client", "dashboard"]
+						}
+					}
+				},
+				{
+					"name": "Get Bookings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client/bookings",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client", "bookings"]
+						}
+					}
+				},
+				{
+					"name": "Create Booking",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client/bookings/create",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client", "bookings", "create"]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"serviceId\": \"service_id\",\n    \"date\": \"2025-04-02\",\n    \"time\": \"14:00\",\n    \"notes\": \"Booking notes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				},
+				{
+					"name": "Update Booking",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/client/bookings/:id/update",
+							"host": ["{{base_url}}"],
+							"path": ["api", "client", "bookings", ":id", "update"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "booking_id"
+								}
+							]
+						},
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"notes\": \"Updated booking notes\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000"
+		},
+		{
+			"key": "token",
+			"value": "your_jwt_token_here"
+		},
+		{
+			"key": "organization_type_id",
+			"value": "your_organization_type_id_here"
+		},
+		{
+			"key": "organization_id",
+			"value": "your_organization_id_here"
+		}
+	]
+}

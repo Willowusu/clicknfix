@@ -142,16 +142,16 @@ router.get('/notifications/preferences', authenticate, notificationController.ge
 router.put('/notifications/preferences', authenticate, validateRequest('updatePreferences'), notificationController.updatePreferences);
 
 /*************************SYSTEM SETTINGS ACTIONS CRUD********************************/
-router.post('/system-settings', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.createSystemSettings);
-router.get('/system-settings', authorizeAccess, systemSettingsController.getSystemSettings);
-router.put('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.updateSystemSettings);
-router.delete('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.deleteSystemSettings);
+// router.post('/system-settings', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.createSystemSettings);
+// router.get('/system-settings', authorizeAccess, systemSettingsController.getSettings);
+// router.put('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.updateSettings);
+// router.delete('/system-settings/:id', authorizeAccess, checkRole(["super_admin"]), systemSettingsController.deleteSettings);
 
 /*************************NOTIFICATION TEMPLATE ACTIONS CRUD********************************/
-router.post('/notification-templates', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.createNotificationTemplate);
-router.get('/notification-templates', authorizeAccess, notificationTemplateController.getNotificationTemplates);
-router.put('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.updateNotificationTemplate);
-router.delete('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.deleteNotificationTemplate);
+router.post('/notification-templates', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.createTemplate);
+router.get('/notification-templates', authorizeAccess, notificationTemplateController.getTemplates);
+router.put('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.updateTemplate);
+router.delete('/notification-templates/:id', authorizeAccess, checkRole(["super_admin"]), notificationTemplateController.deleteTemplate);
 
 /*************************SERVICE CATEGORY ACTIONS CRUD********************************/
 router.post('/service-categories', authorizeAccess, checkRole(["provider", "super_admin"]), serviceCategoryController.createServiceCategory);

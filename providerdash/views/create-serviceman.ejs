@@ -1,0 +1,75 @@
+<div class="d-flex justify-content-center my-4">
+  <div class="col-12 grid-margin stretch-card" style="max-width: 500px;">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Create Serviceman</h4>
+        <p class="card-description"> Basic form layout </p>
+        <form class="forms-sample">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" class="form-control" id="phone" placeholder="Phone Number" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="email">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="Email" required>
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="status">Status</label>
+              <select class="form-control" id="status">
+                <option value="available">Available</option>
+                <option value="busy">Busy</option>
+                <option value="offline">Offline</option>
+                <option value="on_leave">On Leave</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="skills">Skills</label>
+              <input type="text" class="form-control" id="skills" placeholder="Enter skills (comma-separated)">
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="certifications">Certifications</label>
+              <input type="text" class="form-control" id="certifications" placeholder="Enter certifications (comma-separated)">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="location">Location</label>
+              <input type="text" class="form-control" id="location" placeholder="Address, City, State, Country">
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="availability">Availability</label>
+              <input type="text" class="form-control" id="availability" placeholder="Enter availability details">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label for="workload">Current Workload</label>
+              <input type="number" class="form-control" id="workload" placeholder="Number of ongoing bookings">
+            </div>
+            <div class="col-md-6 form-group">
+              <label for="emergencyContact">Emergency Contact</label>
+              <input type="text" class="form-control" id="emergencyContact" placeholder="Name, Relationship, Phone">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="documents">Documents</label>
+            <input type="file" class="form-control" id="documents" multiple>
+          </div>
+          <button type="submit" class="btn btn-primary me-2">Submit</button>
+          <button type="reset" class="btn btn-light">Cancel</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

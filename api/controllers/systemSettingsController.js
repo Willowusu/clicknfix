@@ -15,7 +15,7 @@ exports.getSettings = async (req, res) => {
 exports.updateSettings = async (req, res) => {
     try {
         const settings = await SystemSettings.getSettings();
-        
+
         // Update only the provided fields
         Object.keys(req.body).forEach(category => {
             if (settings[category] && typeof settings[category] === 'object') {
@@ -40,7 +40,7 @@ exports.updateBookingSettings = async (req, res) => {
         const settings = await SystemSettings.getSettings();
         Object.assign(settings.booking, req.body);
         await settings.save();
-        
+
         return res.status(200).json({
             message: "Booking settings updated successfully",
             bookingSettings: settings.booking
@@ -57,7 +57,7 @@ exports.updateNotificationSettings = async (req, res) => {
         const settings = await SystemSettings.getSettings();
         Object.assign(settings.notification, req.body);
         await settings.save();
-        
+
         return res.status(200).json({
             message: "Notification settings updated successfully",
             notificationSettings: settings.notification
@@ -74,7 +74,7 @@ exports.updatePaymentSettings = async (req, res) => {
         const settings = await SystemSettings.getSettings();
         Object.assign(settings.payment, req.body);
         await settings.save();
-        
+
         return res.status(200).json({
             message: "Payment settings updated successfully",
             paymentSettings: settings.payment
@@ -91,7 +91,7 @@ exports.updateSecuritySettings = async (req, res) => {
         const settings = await SystemSettings.getSettings();
         Object.assign(settings.security, req.body);
         await settings.save();
-        
+
         return res.status(200).json({
             message: "Security settings updated successfully",
             securitySettings: settings.security
@@ -107,14 +107,14 @@ exports.toggleMaintenanceMode = async (req, res) => {
     try {
         const { isMaintenanceMode, maintenanceMessage, allowedIPs } = req.body;
         const settings = await SystemSettings.getSettings();
-        
+
         settings.maintenance = {
             ...settings.maintenance,
             isMaintenanceMode,
             ...(maintenanceMessage && { maintenanceMessage }),
             ...(allowedIPs && { allowedIPs })
         };
-        
+
         await settings.save();
         return res.status(200).json({
             message: `Maintenance mode ${isMaintenanceMode ? 'enabled' : 'disabled'} successfully`,
@@ -131,11 +131,11 @@ exports.getSettingsByCategory = async (req, res) => {
     try {
         const { category } = req.params;
         const settings = await SystemSettings.getSettings();
-        
+
         if (!settings[category]) {
             return res.status(404).json({ message: "Settings category not found" });
         }
-        
+
         return res.status(200).json({
             [category]: settings[category]
         });
@@ -143,4 +143,5 @@ exports.getSettingsByCategory = async (req, res) => {
         console.error("Error retrieving settings category:", error);
         return res.status(500).json({ message: "Internal server error", error: error.message });
     }
-}; 
+};
+

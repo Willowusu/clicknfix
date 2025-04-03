@@ -1,0 +1,43 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">All Service Categories</h4>
+        <p class="card-description"> Add class <code>.table</code>
+        </p>
+        <div id="service_categories-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  new gridjs.Grid({
+    columns: [
+      "Name",
+      "Created At",
+    ],
+    server: {
+      method: "GET",
+      data: {},
+      url: '/api/service-categories',
+      then: (data) => {
+        return data.data.service_categories.map((service_category) => [
+          service_category.name,
+          gridjs.html(`
+            <div>
+              ${new Date(service_category.createdAt).toLocaleDateString()}<br>
+              <small class="text-muted">${new Date(service_category.createdAt).toLocaleTimeString()}</small>
+            </div>
+          `)
+        ]);
+      },
+    },
+    search: true,
+    pagination: { enabled: true, limit: 10 },
+    sort: true,
+  }).render(document.getElementById("service_categories-table"));
+
+</script>

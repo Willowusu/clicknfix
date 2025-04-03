@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">All Servicemen</h4>
+        <p class="card-description"> Add class <code>.table</code>
+        </p>
+        <div id="servicemen-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  new gridjs.Grid({
+    columns: [
+      "Name",
+      "Job Title",
+      "Created At"
+    ],
+    server: {
+      method: "GET",
+      data: {},
+      url: '/api/servicemen',
+      then: (data) => {
+        return data.data.servicemen.map((serviceman) => [
+          serviceman.name,
+          serviceman.jobTitle,
+          gridjs.html(`
+            <div>
+              ${new Date(serviceman.createdAt).toLocaleDateString()}<br>
+              <small class="text-muted">${new Date(serviceman.createdAt).toLocaleTimeString()}</small>
+            </div>
+          `)        ]);
+      },
+    },
+    search: true,
+    pagination: { enabled: true, limit: 10 },
+    sort: true,
+  }).render(document.getElementById("servicemen-table"));
+
+</script>

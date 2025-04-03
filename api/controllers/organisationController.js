@@ -26,25 +26,34 @@ exports.createOrganisation = async (req, res) => {
   }
 };
 
-// ✅ Get Organisation by ID
+// ✅ Get Organisation(s)
 exports.getOrganisation = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid organisation ID" });
+
+    if (id) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid organisation ID" });
+      }
+
+      const organisation = await Organisation.findById(id)
+        .populate("type")
+        .populate("provider");
+
+      if (!organisation) {
+        return res.status(404).json({ message: "Organisation not found" });
+      }
+
+      return res.status(200).json(organisation);
+    } else {
+      const organisations = await Organisation.find()
+        .populate("type")
+        .populate("provider");
+
+      return res.status(200).json({ status:"success", organisations });
     }
-
-    const organisation = await Organisation.findById(id)
-      .populate("type")
-      .populate("provider");
-
-    if (!organisation) {
-      return res.status(404).json({ message: "Organisation not found" });
-    }
-
-    return res.status(200).json(organisation);
   } catch (error) {
-    console.error("Error retrieving organisation:", error);
+    console.error("Error retrieving organisation(s):", error);
     return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };

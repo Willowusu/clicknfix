@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">All Bookings</h4>
+          <p class="card-description"> Add class <code>.table</code>
+          </p>
+         <div id="booking-table"></div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<script>
+
+  new gridjs.Grid({
+    columns: [
+      "Client",
+      // { name: "Image", formatter: (cell) => gridjs.html(`<img src="${cell}" width="50" height="50">`) },
+      "Description",
+      "Branch",
+      "Service",
+      "Serviceman",
+      "Booking Time",
+      "Status",
+    ],
+    server: {
+      method: "GET",
+      data: {},
+      url: '/api/bookings',
+      then: (data) => {
+        return data.data.bookings.map((booking) => [
+          booking.client?.name || "N/A",
+          // booking.image,
+          booking.description,
+          booking.branch?.name || "N/A",
+          booking.service?.name || "N/A",
+          booking.serviceman?.name || "N/A",
+          new Date(booking.bookingTime).toLocaleString(),
+          booking.status,
+        ]);
+      },
+    },
+    search: true,
+    pagination: { enabled: true, limit: 10 },
+    sort: true,
+  }).render(document.getElementById("booking-table"));
+
+</script>

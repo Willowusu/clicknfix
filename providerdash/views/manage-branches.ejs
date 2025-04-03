@@ -1,0 +1,40 @@
+<div class="row">
+  <div class="col-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">All Branches</h4>
+        <p class="card-description"> Add class <code>.table</code>
+        </p>
+        <div id="branches-table"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+  new gridjs.Grid({
+    columns: [
+      "Name",
+      "Address",
+      "Organization"
+    ],
+    server: {
+      method: "GET",
+      data: {},
+      url: '/api/branches',
+      then: (data) => {
+        return data.data.branches.map((branch) => [
+          branch.name,
+          branch.address,
+          branch.organization?.name || "N/A",
+        ]);
+      },
+    },
+    search: true,
+    pagination: { enabled: true, limit: 10 },
+    sort: true,
+  }).render(document.getElementById("branches-table"));
+
+</script>
