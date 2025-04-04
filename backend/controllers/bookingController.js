@@ -4,36 +4,8 @@ const Organization = require('../models/Organization');  // Assuming an Organiza
 const Branch = require('../models/Branch');  // Assuming a Branch model
 const Service = require('../models/Service');  // Assuming a Service model
 const response = require('../utils/response');  // Assuming a utility for standard responses
-const multer = require('multer');
-const path = require('path');
+const uploadImage = require('../utils/cloudinary');
 
-// Multer setup for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Ensure the 'uploads' directory exists
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'booking-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  // Accept only image files
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed!'), false);
-  }
-};
-
-const upload = multer({ 
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
-});
 
 // GET /api/bookings
 exports.getAllBookings = async (req, res) => {
@@ -88,7 +60,7 @@ exports.createBooking = async (req, res) => {
   try {
     const { branchId, serviceId, date, time, description } = req.body;
     const { role, user } = req;
-    const image = req.file ? req.file.filename : null;
+    let image = req.file ? req.file.filename : null;
 
     // Validate required fields
     if (!branchId || !serviceId || !date || !time || !description) {
@@ -125,6 +97,8 @@ exports.createBooking = async (req, res) => {
       return res.status(404).json(response(404, 'error', null, 'Service not found'));
     }
 
+    image = await uploadImage(image);
+
     // Create a new booking
     const newBooking = new Booking({
       branch: branchId,
@@ -154,8 +128,6 @@ exports.createBooking = async (req, res) => {
   }
 };
 
-// Multer middleware for handling file uploads
-exports.uploadImage = upload.single('image');
 
 // PUT /api/bookings/{id}
 exports.updateBooking = async (req, res) => {
@@ -175,8 +147,8 @@ exports.updateBooking = async (req, res) => {
     if (role === 'provider' || role === 'super-admin') {
       booking.date = date || booking.date;
       booking.time = time || booking.time;
-      booking.serviceId = serviceId || booking.serviceId;
-      booking.clientId = clientId || booking.clientId;
+      booking.service = serviceId || booking.service;
+      booking.client = clientId || booking.client;
 
       await booking.save();
       return res.status(200).json(response(200, 'success', booking, 'Booking updated successfully'));
@@ -191,8 +163,8 @@ exports.updateBooking = async (req, res) => {
     // Allow updates if the user has the right permissions
     booking.date = date || booking.date;
     booking.time = time || booking.time;
-    booking.serviceId = serviceId || booking.serviceId;
-    booking.clientId = clientId || booking.clientId;
+    booking.service = serviceId || booking.service;
+    booking.client = clientId || booking.client;
 
     await booking.save();
 

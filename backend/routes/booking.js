@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', authenticateToken, bookingController.getAllBookings);
 
 // POST /api/bookings/create
-router.post('/create',authenticateToken, bookingController.uploadImage, bookingController.createBooking);
+router.post('/create',authenticateToken, bookingController.createBooking);
 
 // PUT /api/bookings/{id}
 router.put('/:id', authenticateToken, bookingController.updateBooking);
